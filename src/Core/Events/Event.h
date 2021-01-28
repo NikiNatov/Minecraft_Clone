@@ -1,0 +1,46 @@
+#pragma once
+
+#include <functional>
+#include <string>
+
+enum class EventType
+{
+	KeyPressedEvent = 0, KeyReleasedEvent = 1,
+	MouseMovedEvent = 2, MouseScrolledEvent = 3, MouseButtonPressedEvent = 4, MouseButtonReleasedEvent = 5,
+	WindowResizedEvent = 6, WindowClosedEvent = 7
+};
+
+class Event
+{
+public:
+	Event() {}
+	~Event() {}
+
+	virtual EventType GetType() const = 0;
+	virtual std::string ToString() const = 0;
+
+	bool Handled = false;
+};
+
+class EventDispatcher
+{
+public:
+	EventDispatcher(Event& event)
+		: m_Event(event)
+	{
+	}
+
+	template<typename T>
+	bool Dispatch(const std::function<bool(T&)>& fn)
+	{
+		if (m_Event.GetType() == T::GetStaticType())
+		{
+			m_Event.Handled = fn(static_cast<T&>(m_Event));
+			return true;
+		}
+
+		return false;
+	}
+private:
+	Event& m_Event;
+};
