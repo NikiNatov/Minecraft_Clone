@@ -32,7 +32,7 @@ public:
 
 	void OnUpdate();
 
-	inline GLFWwindow* GetWindowhandle() const { return m_WindowHandle; }
+	inline GLFWwindow* GetWindowHandle() const { return m_WindowHandle; }
 	inline const std::string& GetTitle() const { return m_WindowProperties.Title; }
 	inline uint32_t GetWidth() const { return m_WindowProperties.Width; }
 	inline uint32_t GetHeight() const { return m_WindowProperties.Height; }
