@@ -5,9 +5,10 @@
 
 enum class EventType
 {
-	KeyPressedEvent = 0, KeyReleasedEvent = 1,
-	MouseMovedEvent = 2, MouseScrolledEvent = 3, MouseButtonPressedEvent = 4, MouseButtonReleasedEvent = 5,
-	WindowResizedEvent = 6, WindowClosedEvent = 7
+	None = 0,
+	KeyPressedEvent, KeyReleasedEvent, KeyTypedEvent,
+	MouseMovedEvent, MouseScrolledEvent, MouseButtonPressedEvent, MouseButtonReleasedEvent,
+	WindowResizedEvent, WindowClosedEvent
 };
 
 class Event

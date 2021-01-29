@@ -8,6 +8,8 @@
 	#define ASSERT(x,...)
 #endif
 
+#define BIND_FN(fn) [this](auto&&... args) -> decltype(auto) { return this->fn(std::forward<decltype(args)>(args)...);}
+
 template<typename T>
 using Ref = std::shared_ptr<T>;
 
