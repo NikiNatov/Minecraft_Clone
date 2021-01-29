@@ -3,6 +3,8 @@
 #include "Core\Layer.h"
 #include "Core\Events\KeyEvent.h"
 
+#include "Graphics\VertexArray.h"
+
 class GameLayer : public Layer
 {
 public:
@@ -18,4 +20,7 @@ public:
 
 private:
 	bool OnKeyPressed(KeyPressedEvent& e);
+
+private:
+	Ref<VertexArray> m_VertexArray;
 };

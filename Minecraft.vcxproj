@@ -100,6 +100,9 @@
     <ClCompile Include="src\Core\LayerStack.cpp" />
     <ClCompile Include="src\Game\GameLayer.cpp" />
     <ClCompile Include="src\Graphics\GraphicsContext.cpp" />
+    <ClCompile Include="src\Graphics\IndexBuffer.cpp" />
+    <ClCompile Include="src\Graphics\VertexArray.cpp" />
+    <ClCompile Include="src\Graphics\VertexBuffer.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
@@ -120,6 +123,9 @@
     <ClInclude Include="src\Core\MouseCodes.h" />
     <ClInclude Include="src\Game\GameLayer.h" />
     <ClInclude Include="src\Graphics\GraphicsContext.h" />
+    <ClInclude Include="src\Graphics\IndexBuffer.h" />
+    <ClInclude Include="src\Graphics\VertexArray.h" />
+    <ClInclude Include="src\Graphics\VertexBuffer.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\Core\Window.h" />
   </ItemGroup>

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <iostream>
 
 #ifdef _DEBUG
 	#define ASSERT(x,...) { if(!(x)) { std::cout << "Assertion failed: " << __VA_ARGS__ << std::endl; __debugbreak();}}
