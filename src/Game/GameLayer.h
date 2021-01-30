@@ -4,6 +4,7 @@
 #include "Core\Events\KeyEvent.h"
 
 #include "Graphics\VertexArray.h"
+#include "Graphics\Shader.h"
 
 class GameLayer : public Layer
 {
@@ -23,4 +24,5 @@ private:
 
 private:
 	Ref<VertexArray> m_VertexArray;
+	Ref<Shader> m_BasicShader;
 };

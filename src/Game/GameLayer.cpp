@@ -16,28 +16,31 @@ void GameLayer::OnAttach()
 {
 	std::cout << "Game Layer: Layer attached" << std::endl;
 
-	BufferLayout layout = {
-		{"a_Position", DataType::Float3, false}
-	};
-
 	float vertices[] =
 	{
 		-0.5f, -0.5f, 0.0f,
 		 0.5f, -0.5f, 0.0f,
 		 0.0f,  0.5f, 0.0f
 	};
-
-	Ref<VertexBuffer> vb = CreateRef<VertexBuffer>(vertices, sizeof(vertices));
-	vb->SetLayout(layout);
-
 	uint32_t indices[] = { 0, 1, 2 };
 
+	// Vertex buffer
+	Ref<VertexBuffer> vb = CreateRef<VertexBuffer>(vertices, sizeof(vertices));
+	vb->SetLayout(
+	{
+		{"a_Position", DataType::Float3, false}
+	});
+
+	//Index buffer
 	Ref<IndexBuffer> ib = CreateRef<IndexBuffer>(indices, sizeof(indices) / sizeof(uint32_t));
 
+	// Vertex array
 	m_VertexArray = CreateRef<VertexArray>();
-
 	m_VertexArray->SetVertexBuffer(vb);
 	m_VertexArray->SetIndexBuffer(ib);
+
+	// Shader
+	m_BasicShader = CreateRef<Shader>("assets/shaders/BasicShader.glsl");
 }
 
 void GameLayer::OnDetach()
@@ -47,6 +50,7 @@ void GameLayer::OnDetach()
 
 void GameLayer::OnUpdate(float dt)
 {
+	m_BasicShader->Bind();
 	m_VertexArray->Bind();
 	glDrawElements(GL_TRIANGLES, m_VertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
 }
