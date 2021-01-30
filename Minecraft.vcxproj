@@ -61,7 +61,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(SolutionDir)src/;$(SolutionDir)vendor/GLFW/include/;$(SolutionDir)vendor/Glad/include/;$(SolutionDir)vendor/glm/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src/;$(SolutionDir)vendor/GLFW/include/;$(SolutionDir)vendor/Glad/include/;$(SolutionDir)vendor/glm/;$(SolutionDir)vendor/stb_image/</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -81,7 +81,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(SolutionDir)src/;$(SolutionDir)vendor/GLFW/include/;$(SolutionDir)vendor/Glad/include/;$(SolutionDir)vendor/glm/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src/;$(SolutionDir)vendor/GLFW/include/;$(SolutionDir)vendor/Glad/include/;$(SolutionDir)vendor/glm/;$(SolutionDir)vendor/stb_image/</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -102,6 +102,7 @@
     <ClCompile Include="src\Graphics\GraphicsContext.cpp" />
     <ClCompile Include="src\Graphics\IndexBuffer.cpp" />
     <ClCompile Include="src\Graphics\Shader.cpp" />
+    <ClCompile Include="src\Graphics\Texture2D.cpp" />
     <ClCompile Include="src\Graphics\VertexArray.cpp" />
     <ClCompile Include="src\Graphics\VertexBuffer.cpp" />
     <ClCompile Include="src\pch.cpp">
@@ -109,6 +110,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\Core\Window.cpp" />
+    <ClCompile Include="vendor\stb_image\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Core\Application.h" />
@@ -126,10 +128,12 @@
     <ClInclude Include="src\Graphics\GraphicsContext.h" />
     <ClInclude Include="src\Graphics\IndexBuffer.h" />
     <ClInclude Include="src\Graphics\Shader.h" />
+    <ClInclude Include="src\Graphics\Texture2D.h" />
     <ClInclude Include="src\Graphics\VertexArray.h" />
     <ClInclude Include="src\Graphics\VertexBuffer.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\Core\Window.h" />
+    <ClInclude Include="vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\Glad\Glad.vcxproj">

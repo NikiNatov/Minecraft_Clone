@@ -52,6 +52,7 @@ void Application::OnEvent(Event& e)
 {
 	EventDispatcher dispatcher(e);
 	dispatcher.Dispatch<WindowClosedEvent>(BIND_FN(Application::OnWindowClosed));
+	dispatcher.Dispatch<WindowResizedEvent>(BIND_FN(Application::OnWindowResized));
 
 	for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
 	{
@@ -78,4 +79,10 @@ bool Application::OnWindowClosed(WindowClosedEvent& e)
 {
 	m_Running = false;
 	return true;
+}
+
+bool Application::OnWindowResized(WindowResizedEvent& e)
+{
+	glViewport(0, 0, e.GetWidth(), e.GetHeight());
+	return false;
 }

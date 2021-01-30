@@ -26,6 +26,7 @@ public:
 	inline Window& GetWindow() const { return *m_Window; }
 private:
 	bool OnWindowClosed(WindowClosedEvent& e);
+	bool OnWindowResized(WindowResizedEvent& e);
 public:
 	static Application& GetInstance() { return *s_Instance; }
 private:
