@@ -2,7 +2,7 @@
 #include "GameLayer.h"
 
 #include "Core\Base.h"
-
+#include "Graphics\Renderer.h"
 
 GameLayer::GameLayer()
 	: m_Camera({0.0f, 0.0f, 3.0}, 45.0f, 16.0f / 9.0f)
@@ -55,13 +55,12 @@ void GameLayer::OnUpdate(float dt)
 {
 	m_Camera.OnUpdate(dt);
 
-	m_TextureShader->Bind();
-	m_TextureShader->SetMat4("u_Projection", 1, m_Camera.GetProjectionMatrix());
-	m_TextureShader->SetMat4("u_View", 1, m_Camera.GetViewMatrix());
-
-	m_Texture->Bind(0);
-	m_VertexArray->Bind();
-	glDrawElements(GL_TRIANGLES, m_VertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+	// Render
+	Renderer::BeginScene(m_Camera);
+	Renderer::ClearScreen({ 0.5f, 0.5f, 0.5f, 1.0f });
+	Renderer::Submit(m_VertexArray, m_TextureShader, m_Texture, glm::mat4(1.0f));
+	Renderer::EndScene();
+	Renderer::Present();
 }
 
 void GameLayer::OnEvent(Event& e)

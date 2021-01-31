@@ -11,6 +11,7 @@
 #include "Core\MouseCodes.h"
 
 #include "Game\GameLayer.h"
+#include "Graphics\Renderer.h"
 
 Application* Application::s_Instance = nullptr;
 
@@ -19,8 +20,11 @@ Application::Application()
 	ASSERT(!s_Instance, "Application already exists!");
 	s_Instance = this;
 
+
 	Window::WindowProperties properties("Minecraft Clone", 1280, 720, true, BIND_FN(Application::OnEvent));
 	m_Window = CreateScoped<Window>(properties);
+
+	Renderer::Init();
 
 	PushLayer(new GameLayer());
 }
@@ -37,9 +41,6 @@ void Application::Run()
 		m_CurrentFrameTime = (float)glfwGetTime();
 		float dt = m_CurrentFrameTime - m_LastFrameTime;
 		m_LastFrameTime = m_CurrentFrameTime;
-
-		glClearColor(0.5, 0.5, 0.5, 1.0);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		for (auto layer : m_LayerStack)
 			layer->OnUpdate(dt);
@@ -83,6 +84,6 @@ bool Application::OnWindowClosed(WindowClosedEvent& e)
 
 bool Application::OnWindowResized(WindowResizedEvent& e)
 {
-	glViewport(0, 0, e.GetWidth(), e.GetHeight());
+	Renderer::SetViewportSize(0, 0, e.GetWidth(), e.GetHeight());
 	return false;
 }

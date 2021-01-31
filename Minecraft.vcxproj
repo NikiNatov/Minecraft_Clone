@@ -102,6 +102,7 @@
     <ClCompile Include="src\Graphics\FPSCamera.cpp" />
     <ClCompile Include="src\Graphics\GraphicsContext.cpp" />
     <ClCompile Include="src\Graphics\IndexBuffer.cpp" />
+    <ClCompile Include="src\Graphics\Renderer.cpp" />
     <ClCompile Include="src\Graphics\Shader.cpp" />
     <ClCompile Include="src\Graphics\Texture2D.cpp" />
     <ClCompile Include="src\Graphics\VertexArray.cpp" />
@@ -129,6 +130,7 @@
     <ClInclude Include="src\Graphics\FPSCamera.h" />
     <ClInclude Include="src\Graphics\GraphicsContext.h" />
     <ClInclude Include="src\Graphics\IndexBuffer.h" />
+    <ClInclude Include="src\Graphics\Renderer.h" />
     <ClInclude Include="src\Graphics\Shader.h" />
     <ClInclude Include="src\Graphics\Texture2D.h" />
     <ClInclude Include="src\Graphics\VertexArray.h" />
