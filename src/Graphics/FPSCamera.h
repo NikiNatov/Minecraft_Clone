@@ -27,8 +27,8 @@ private:
 	glm::vec3 m_Rotation;
 
 	float m_Pitch = 0.0f;
-	float m_Yaw = 0.0f;
-	float m_MovementSpeed = 5.0f;
+	float m_Yaw = 180.0f;
+	float m_MovementSpeed = 15.0f;
 	float m_RotationSpeed = 20.0f;
 
 	glm::vec2 m_LastMousePosition;

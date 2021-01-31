@@ -42,6 +42,8 @@ void Application::Run()
 		float dt = m_CurrentFrameTime - m_LastFrameTime;
 		m_LastFrameTime = m_CurrentFrameTime;
 
+		std::cout << dt << std::endl;
+
 		for (auto layer : m_LayerStack)
 			layer->OnUpdate(dt);
 

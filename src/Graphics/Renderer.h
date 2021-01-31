@@ -21,8 +21,6 @@ struct RenderCommand
 	Ref<VertexArray> VAO;
 	Ref<Shader> Shader;
 	glm::mat4 Transform;
-	// Temp
-	Ref<Texture2D> Texture;
 };
 
 class Renderer
@@ -34,7 +32,7 @@ public:
 	static void EndScene();
 	static void Present();
 
-	static void Submit(const Ref<VertexArray>& vao, const Ref<Shader>& shader, const Ref<Texture2D>& texture, const glm::mat4& transform);
+	static void Submit(const Ref<VertexArray>& vao, const Ref<Shader>& shader, const glm::mat4& transform);
 	static void SetViewportSize(int x, int y, int width, int height);
 	static void ClearScreen(const glm::vec4& color);
 private:

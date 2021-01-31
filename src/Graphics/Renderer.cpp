@@ -8,6 +8,8 @@ std::vector<RenderCommand> Renderer::s_RenderCommandQueue;
 
 void Renderer::Init()
 {
+	glDisable(GL_CULL_FACE);
+	glEnable(GL_DEPTH_TEST);
 	s_RenderCommandQueue.reserve(1000);
 }
 
@@ -31,19 +33,17 @@ void Renderer::Present()
 		command.Shader->Bind();
 		command.Shader->SetMat4("u_ViewProjection", 1, s_SceneData->ViewProjectionMatrix);
 		command.Shader->SetMat4("u_Transform", 1, command.Transform);
-		command.Texture->Bind(0);
 		command.VAO->Bind();
 		glDrawElements(GL_TRIANGLES, command.VAO->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
 	}
 }
 
-void Renderer::Submit(const Ref<VertexArray>& vao, const Ref<Shader>& shader, const Ref<Texture2D>& texture, const glm::mat4& transform)
+void Renderer::Submit(const Ref<VertexArray>& vao, const Ref<Shader>& shader, const glm::mat4& transform)
 {
 	RenderCommand command;
 	command.VAO = vao;
 	command.Shader = shader;
 	command.Transform = transform;
-	command.Texture = texture;
 	s_RenderCommandQueue.emplace_back(command);
 }
 

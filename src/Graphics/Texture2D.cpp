@@ -33,8 +33,8 @@ GLenum TextureFilterToGLFilter(TextureFilter filter)
 {
 	switch (filter)
 	{
-		case TextureFilter::Linear:		return GL_LINEAR;
-		case TextureFilter::Nearest:	return GL_NEAREST;
+		case TextureFilter::Linear:		return GL_LINEAR_MIPMAP_LINEAR;
+		case TextureFilter::Nearest:	return GL_NEAREST_MIPMAP_NEAREST;
 	}
 
 	ASSERT(false, "Texture filter not supported!");

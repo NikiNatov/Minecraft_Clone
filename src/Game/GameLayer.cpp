@@ -3,10 +3,12 @@
 
 #include "Core\Base.h"
 #include "Graphics\Renderer.h"
+#include "Graphics\SpriteManager.h"
 
 GameLayer::GameLayer()
-	: m_Camera({0.0f, 0.0f, 3.0}, 45.0f, 16.0f / 9.0f)
+	: m_Camera({10.0f, 0.0f, -20.0}, 45.0f, 16.0f / 9.0f)
 {
+	
 }
 
 GameLayer::~GameLayer()
@@ -15,36 +17,23 @@ GameLayer::~GameLayer()
 
 void GameLayer::OnAttach()
 {
-	float vertices[] =
-	{
-		-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
-		 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-		 0.5f,  0.5f, 0.0f,	1.0f, 1.0f,
-		-0.5f,  0.5f, 0.0f,	0.0f, 1.0f
-	};
-	uint32_t indices[] = { 0, 1, 2, 2, 3, 0 };
-
-	// Vertex buffer
-	Ref<VertexBuffer> vb = CreateRef<VertexBuffer>(vertices, sizeof(vertices));
-	vb->SetLayout(
-	{
-		{"a_Position", DataType::Float3, false},
-		{"a_TexCoords", DataType::Float2, false},
-	});
-
-	//Index buffer
-	Ref<IndexBuffer> ib = CreateRef<IndexBuffer>(indices, sizeof(indices) / sizeof(uint32_t));
-
-	// Vertex array
-	m_VertexArray = CreateRef<VertexArray>();
-	m_VertexArray->SetVertexBuffer(vb);
-	m_VertexArray->SetIndexBuffer(ib);
-
 	// Shader
 	m_TextureShader = CreateRef<Shader>("assets/shaders/TextureShader.glsl");
 
-	// Texture
-	m_Texture = CreateRef<Texture2D>("assets/textures/minecraft_spritesheet.png", TextureFilter::Linear, TextureFilter::Nearest, TextureWrap::Repeat, true);
+	// Sprite sheet
+	m_SpriteSheet = CreateRef<Texture2D>("assets/textures/minecraft_spritesheet.png", TextureFilter::Linear, TextureFilter::Nearest, TextureWrap::Repeat, true);
+
+	SpriteManager::AddSprite("GrassTop", CreateRef<SubTexture2D>(m_SpriteSheet, 0, 15, 64, 64));
+	SpriteManager::AddSprite("GrassSide", CreateRef<SubTexture2D>(m_SpriteSheet, 3, 15, 64, 64));
+	SpriteManager::AddSprite("Dirt", CreateRef<SubTexture2D>(m_SpriteSheet, 2, 15, 64, 64));
+	SpriteManager::AddSprite("Stone", CreateRef<SubTexture2D>(m_SpriteSheet, 1, 15, 64, 64));
+
+	Block::s_GrassBlock = CreateScoped<Block>(BlockID::Grass);
+	Block::s_DirtBlock = CreateScoped<Block>(BlockID::Dirt);
+	Block::s_StoneBlock = CreateScoped<Block>(BlockID::Stone);
+
+	m_Chunk = CreateRef<Chunk>();
+	m_Chunk->CreateMesh();
 }
 
 void GameLayer::OnDetach()
@@ -57,8 +46,11 @@ void GameLayer::OnUpdate(float dt)
 
 	// Render
 	Renderer::BeginScene(m_Camera);
-	Renderer::ClearScreen({ 0.5f, 0.5f, 0.5f, 1.0f });
-	Renderer::Submit(m_VertexArray, m_TextureShader, m_Texture, glm::mat4(1.0f));
+	Renderer::ClearScreen({ 0.4f, 0.7f, 1.0f, 1.0f });
+
+	m_SpriteSheet->Bind(0);
+	Renderer::Submit(m_Chunk->GetVAO(), m_TextureShader, glm::translate(glm::mat4(1.0f), glm::vec3(0.0, -10.0f, 0.0f)));
+
 	Renderer::EndScene();
 	Renderer::Present();
 }
