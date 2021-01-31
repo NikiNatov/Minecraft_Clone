@@ -19,7 +19,7 @@ Application::Application()
 	ASSERT(!s_Instance, "Application already exists!");
 	s_Instance = this;
 
-	Window::WindowProperties properties("Minecraft Clone", 800, 600, true, BIND_FN(Application::OnEvent));
+	Window::WindowProperties properties("Minecraft Clone", 1280, 720, true, BIND_FN(Application::OnEvent));
 	m_Window = CreateScoped<Window>(properties);
 
 	PushLayer(new GameLayer());

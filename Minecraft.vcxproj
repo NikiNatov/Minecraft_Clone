@@ -99,6 +99,7 @@
     <ClCompile Include="src\Core\Input.cpp" />
     <ClCompile Include="src\Core\LayerStack.cpp" />
     <ClCompile Include="src\Game\GameLayer.cpp" />
+    <ClCompile Include="src\Graphics\FPSCamera.cpp" />
     <ClCompile Include="src\Graphics\GraphicsContext.cpp" />
     <ClCompile Include="src\Graphics\IndexBuffer.cpp" />
     <ClCompile Include="src\Graphics\Shader.cpp" />
@@ -125,6 +126,7 @@
     <ClInclude Include="src\Core\LayerStack.h" />
     <ClInclude Include="src\Core\MouseCodes.h" />
     <ClInclude Include="src\Game\GameLayer.h" />
+    <ClInclude Include="src\Graphics\FPSCamera.h" />
     <ClInclude Include="src\Graphics\GraphicsContext.h" />
     <ClInclude Include="src\Graphics\IndexBuffer.h" />
     <ClInclude Include="src\Graphics\Shader.h" />

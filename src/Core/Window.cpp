@@ -21,6 +21,8 @@ Window::Window(const WindowProperties& properties)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
 
+	glfwSetInputMode(m_WindowHandle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
 	m_GraphicsContext = CreateScoped<GraphicsContext>(m_WindowHandle);
 
 	glfwSetWindowUserPointer(m_WindowHandle, &m_WindowProperties);

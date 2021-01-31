@@ -5,6 +5,7 @@
 
 
 GameLayer::GameLayer()
+	: m_Camera({0.0f, 0.0f, 3.0}, 45.0f, 16.0f / 9.0f)
 {
 }
 
@@ -14,8 +15,6 @@ GameLayer::~GameLayer()
 
 void GameLayer::OnAttach()
 {
-	std::cout << "Game Layer: Layer attached" << std::endl;
-
 	float vertices[] =
 	{
 		-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
@@ -42,20 +41,24 @@ void GameLayer::OnAttach()
 	m_VertexArray->SetIndexBuffer(ib);
 
 	// Shader
-	m_BasicShader = CreateRef<Shader>("assets/shaders/TextureShader.glsl");
+	m_TextureShader = CreateRef<Shader>("assets/shaders/TextureShader.glsl");
 
 	// Texture
-	m_Texture = CreateRef<Texture2D>("assets/textures/minecraft_spritesheet.png", TextureFilter::Linear, TextureFilter::Linear, TextureWrap::Repeat);
+	m_Texture = CreateRef<Texture2D>("assets/textures/minecraft_spritesheet.png", TextureFilter::Linear, TextureFilter::Nearest, TextureWrap::Repeat, true);
 }
 
 void GameLayer::OnDetach()
 {
-	std::cout << "Game Layer: Layer detached" << std::endl;
 }
 
 void GameLayer::OnUpdate(float dt)
 {
-	m_BasicShader->Bind();
+	m_Camera.OnUpdate(dt);
+
+	m_TextureShader->Bind();
+	m_TextureShader->SetMat4("u_Projection", 1, m_Camera.GetProjectionMatrix());
+	m_TextureShader->SetMat4("u_View", 1, m_Camera.GetViewMatrix());
+
 	m_Texture->Bind(0);
 	m_VertexArray->Bind();
 	glDrawElements(GL_TRIANGLES, m_VertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
@@ -64,12 +67,11 @@ void GameLayer::OnUpdate(float dt)
 void GameLayer::OnEvent(Event& e)
 {
 	EventDispatcher dispatcher(e);
-
-	dispatcher.Dispatch<KeyPressedEvent>(BIND_FN(GameLayer::OnKeyPressed));
+	dispatcher.Dispatch<WindowResizedEvent>(BIND_FN(GameLayer::OnWindowResized));
 }
 
-bool GameLayer::OnKeyPressed(KeyPressedEvent& e)
+bool GameLayer::OnWindowResized(WindowResizedEvent& e)
 {
-	std::cout << "Game Layer: " << e.ToString() << std::endl;
+	m_Camera.SetProjection(45.0f, (float)e.GetWidth() / (float)e.GetHeight());
 	return false;
 }
