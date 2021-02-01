@@ -6,30 +6,33 @@
 #include "Graphics\VertexArray.h"
 #include "Graphics\Texture2D.h"
 
-#include "Game\Block.h"
-
+#include "Game\Terrain\Block.h"
 
 class Chunk
 {
 public:
-	Chunk();
+	Chunk(const glm::vec3& gridPosition);
 	~Chunk();
 
-	void CreateMesh();
+	void OnUpdate(float dt);
 	void AddFace(const BlockFace& face, const glm::vec3& blockPosition);
 
-	void OnUpdate(float dt);
-
-	void GenerateBlocks();
-
 	inline const Ref<VertexArray>& GetVAO() const { return m_VAO; }
+	inline const glm::vec3& GetGridPosition() const { return m_GridPosition; }
+private:
+	void CreateMesh();
+	void GenerateBlocks();
 public:
 	static const uint8_t WIDTH = 16;
-	static const uint8_t HEIGHT = 16;
+	static const uint8_t HEIGHT = 255;
 	static const uint8_t DEPTH = 16;
+
+	static const uint8_t VOID_LEVEL = 0;
+	static const uint8_t WATER_LEVEL = 40;
 private:
 	BlockID*** m_Blocks;
 	Ref<VertexArray> m_VAO;
+	glm::vec3 m_GridPosition;
 
 	std::vector<Vertex> m_Vertices;
 	std::vector<uint32_t> m_Indices;

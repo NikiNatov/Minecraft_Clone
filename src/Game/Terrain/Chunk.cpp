@@ -3,7 +3,10 @@
 
 #include <glm\gtc\noise.hpp>
 
-Chunk::Chunk()
+#include "Game\Terrain\Noise.h"
+
+Chunk::Chunk(const glm::vec3& gridPosition)
+	: m_GridPosition(gridPosition)
 {
 	m_Blocks = new BlockID **[WIDTH];
 	
@@ -16,19 +19,8 @@ Chunk::Chunk()
 		}
 	}
 
-	// Temp
-	for (uint8_t x = 0; x < WIDTH; x++)
-	{
-		for (uint8_t y = 0; y < HEIGHT; y++)
-		{
-			for (uint8_t z = 0; z < DEPTH; z++)
-			{
-				m_Blocks[x][y][z] = BlockID::Air;
-			}
-		}
-	}
-
 	GenerateBlocks();
+	CreateMesh();
 }
 
 Chunk::~Chunk()
@@ -43,6 +35,10 @@ Chunk::~Chunk()
 	}
 
 	delete[] m_Blocks;
+}
+
+void Chunk::OnUpdate(float dt)
+{
 }
 
 void Chunk::CreateMesh()
@@ -62,20 +58,23 @@ void Chunk::CreateMesh()
 						case BlockID::Grass:	block = Block::s_GrassBlock.get(); break;
 						case BlockID::Dirt:		block = Block::s_DirtBlock.get(); break;
 						case BlockID::Stone:	block = Block::s_StoneBlock.get(); break;
+						case BlockID::Bedrock:	block = Block::s_BedrockBlock.get(); break;
+						case BlockID::Water:	block = Block::s_WaterBlock.get(); break;
+						case BlockID::Sand:		block = Block::s_SandBlock.get(); break;
 					}
 
 					if (x == 0 || (x - 1 >= 0 && m_Blocks[x - 1][y][z] == BlockID::Air))
-						AddFace(block->GetLeftFace(), {x , y, z});
+						AddFace(block->GetFace(BlockFaceID::Left), {x , y, z});
 					if (x == WIDTH - 1 || (x + 1 < WIDTH && m_Blocks[x + 1][y][z] == BlockID::Air))
-						AddFace(block->GetRightFace(), { x , y, z });
+						AddFace(block->GetFace(BlockFaceID::Right), { x , y, z });
 					if (y == 0 || (y - 1 >= 0 && m_Blocks[x][y - 1][z] == BlockID::Air))
-						AddFace(block->GetDownFace(), { x , y, z });
+						AddFace(block->GetFace(BlockFaceID::Down), { x , y, z });
 					if (y == HEIGHT - 1 || (y + 1 < HEIGHT && m_Blocks[x][y + 1][z] == BlockID::Air))
-						AddFace(block->GetUpFace(), { x , y, z });
+						AddFace(block->GetFace(BlockFaceID::Up), { x , y, z });
 					if (z == 0 || (z - 1 >= 0 && m_Blocks[x][y][z - 1] == BlockID::Air))
-						AddFace(block->GetBackFace(), { x , y, z });
+						AddFace(block->GetFace(BlockFaceID::Back), { x , y, z });
 					if (z == DEPTH - 1 || (z + 1 < DEPTH && m_Blocks[x][y][z + 1] == BlockID::Air))
-						AddFace(block->GetFrontFace(), { x , y, z });
+						AddFace(block->GetFace(BlockFaceID::Front), { x , y, z });
 					
 				}
 			}
@@ -93,8 +92,10 @@ void Chunk::CreateMesh()
 	Ref<IndexBuffer> ib = CreateRef<IndexBuffer>(m_Indices.data(), m_Indices.size());
 
 	m_VAO = CreateRef<VertexArray>();
+	m_VAO->Bind();
 	m_VAO->SetVertexBuffer(vb);
 	m_VAO->SetIndexBuffer(ib);
+	m_VAO->Unbind();
 }
 
 void Chunk::AddFace(const BlockFace& face, const glm::vec3& blockPosition)
@@ -115,20 +116,25 @@ void Chunk::AddFace(const BlockFace& face, const glm::vec3& blockPosition)
 	m_IndicesCount += 4;
 }
 
-void Chunk::OnUpdate(float dt)
-{
-}
-
 void Chunk::GenerateBlocks()
 {
 	uint8_t heights[WIDTH][DEPTH];
+
+	Noise noise1(1231, 6, 110, 205, 0.38, 18);
+	Noise noise2(1231, 4, 30, 200, 0.15, 0);
 
 	for (uint8_t x = 0; x < WIDTH; x++)
 	{
 		for (uint8_t z = 0; z < DEPTH; z++)
 		{
-			float center = glm::perlin(glm::vec2(x / 8.0, z / 8.0));
-			heights[x][z] = (1.0f - center) * 0.5f * HEIGHT;
+			float blockGlobalX = x + m_GridPosition.x * WIDTH;
+			float blockGlobalZ = z + m_GridPosition.z * DEPTH;
+
+			float value1 = noise1.GetNoise(blockGlobalX, blockGlobalZ);
+			float value2 = noise2.GetNoise(blockGlobalX, blockGlobalZ);
+
+			float finalResult = value1 * value2;
+			heights[x][z] = finalResult * noise1.GetAmplitude() + noise1.GetOffset();
 		}
 	}
 
@@ -137,14 +143,21 @@ void Chunk::GenerateBlocks()
 		for (uint8_t z = 0; z < DEPTH; z++)
 		{
 			for (uint8_t y = 0; y < HEIGHT; y++)
-			{
-				
-				if (y == heights[x][z])
+			{	
+				if(y > heights[x][z] && y < WATER_LEVEL)
+					m_Blocks[x][y][z] = BlockID::Water;
+				else if (y == heights[x][z] && y < WATER_LEVEL + 2)
+					m_Blocks[x][y][z] = BlockID::Sand;
+				else if (y == heights[x][z])
 					m_Blocks[x][y][z] = BlockID::Grass;
 				else if (y < heights[x][z] && y >= heights[x][z] - 5)
 					m_Blocks[x][y][z] = BlockID::Dirt;
-				else if( y < heights[x][z] - 5)
+				else if (y >= 3 && y < heights[x][z] - 5)
 					m_Blocks[x][y][z] = BlockID::Stone;
+				else if (y < 3)
+					m_Blocks[x][y][z] = BlockID::Bedrock;
+				else 
+					m_Blocks[x][y][z] = BlockID::Air;
 			}
 		}
 	}

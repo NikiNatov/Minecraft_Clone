@@ -7,7 +7,7 @@
 #include "Graphics\Shader.h"
 #include "Graphics\Texture2D.h"
 #include "Graphics\FPSCamera.h"
-#include "Game\Chunk.h"
+#include "Game\Terrain\Chunk.h"
 
 class GameLayer : public Layer
 {
@@ -25,6 +25,6 @@ private:
 private:
 	Ref<Shader> m_TextureShader;
 	Ref<Texture2D> m_SpriteSheet;
-	Ref<Chunk> m_Chunk;
+	std::vector<Ref<Chunk>> m_Chunks;
 	FPSCamera m_Camera;
 };

@@ -6,6 +6,9 @@
 ScopedPtr<Block> Block::s_GrassBlock;
 ScopedPtr<Block> Block::s_DirtBlock ;
 ScopedPtr<Block> Block::s_StoneBlock;
+ScopedPtr<Block> Block::s_BedrockBlock;
+ScopedPtr<Block> Block::s_WaterBlock;
+ScopedPtr<Block> Block::s_SandBlock;
 
 Block::Block(BlockID id)
 	: m_ID(id)
@@ -220,6 +223,132 @@ Block::Block(BlockID id)
 			m_Faces[(uint8_t)BlockFaceID::Right].Vertices[1].TexCoord = stone->GetTextureCoords()[1];
 			m_Faces[(uint8_t)BlockFaceID::Right].Vertices[2].TexCoord = stone->GetTextureCoords()[2];
 			m_Faces[(uint8_t)BlockFaceID::Right].Vertices[3].TexCoord = stone->GetTextureCoords()[3];
+
+			break;
+		}
+		case BlockID::Bedrock:
+		{
+			const Ref<SubTexture2D>& bedrock = SpriteManager::GetSprite("Bedrock");
+
+			// Up face
+			m_Faces[(uint8_t)BlockFaceID::Up].Vertices[0].TexCoord = bedrock->GetTextureCoords()[0];
+			m_Faces[(uint8_t)BlockFaceID::Up].Vertices[1].TexCoord = bedrock->GetTextureCoords()[1];
+			m_Faces[(uint8_t)BlockFaceID::Up].Vertices[2].TexCoord = bedrock->GetTextureCoords()[2];
+			m_Faces[(uint8_t)BlockFaceID::Up].Vertices[3].TexCoord = bedrock->GetTextureCoords()[3];
+
+			// Down face
+			m_Faces[(uint8_t)BlockFaceID::Down].Vertices[0].TexCoord = bedrock->GetTextureCoords()[0];
+			m_Faces[(uint8_t)BlockFaceID::Down].Vertices[1].TexCoord = bedrock->GetTextureCoords()[1];
+			m_Faces[(uint8_t)BlockFaceID::Down].Vertices[2].TexCoord = bedrock->GetTextureCoords()[2];
+			m_Faces[(uint8_t)BlockFaceID::Down].Vertices[3].TexCoord = bedrock->GetTextureCoords()[3];
+
+			// Front face
+			m_Faces[(uint8_t)BlockFaceID::Front].Vertices[0].TexCoord = bedrock->GetTextureCoords()[0];
+			m_Faces[(uint8_t)BlockFaceID::Front].Vertices[1].TexCoord = bedrock->GetTextureCoords()[1];
+			m_Faces[(uint8_t)BlockFaceID::Front].Vertices[2].TexCoord = bedrock->GetTextureCoords()[2];
+			m_Faces[(uint8_t)BlockFaceID::Front].Vertices[3].TexCoord = bedrock->GetTextureCoords()[3];
+
+			// Back face
+			m_Faces[(uint8_t)BlockFaceID::Back].Vertices[0].TexCoord = bedrock->GetTextureCoords()[0];
+			m_Faces[(uint8_t)BlockFaceID::Back].Vertices[1].TexCoord = bedrock->GetTextureCoords()[1];
+			m_Faces[(uint8_t)BlockFaceID::Back].Vertices[2].TexCoord = bedrock->GetTextureCoords()[2];
+			m_Faces[(uint8_t)BlockFaceID::Back].Vertices[3].TexCoord = bedrock->GetTextureCoords()[3];
+
+			// Left face
+			m_Faces[(uint8_t)BlockFaceID::Left].Vertices[0].TexCoord = bedrock->GetTextureCoords()[0];
+			m_Faces[(uint8_t)BlockFaceID::Left].Vertices[1].TexCoord = bedrock->GetTextureCoords()[1];
+			m_Faces[(uint8_t)BlockFaceID::Left].Vertices[2].TexCoord = bedrock->GetTextureCoords()[2];
+			m_Faces[(uint8_t)BlockFaceID::Left].Vertices[3].TexCoord = bedrock->GetTextureCoords()[3];
+
+			// Right face
+			m_Faces[(uint8_t)BlockFaceID::Right].Vertices[0].TexCoord = bedrock->GetTextureCoords()[0];
+			m_Faces[(uint8_t)BlockFaceID::Right].Vertices[1].TexCoord = bedrock->GetTextureCoords()[1];
+			m_Faces[(uint8_t)BlockFaceID::Right].Vertices[2].TexCoord = bedrock->GetTextureCoords()[2];
+			m_Faces[(uint8_t)BlockFaceID::Right].Vertices[3].TexCoord = bedrock->GetTextureCoords()[3];
+
+			break;
+		}
+		case BlockID::Water:
+		{
+			const Ref<SubTexture2D>& water = SpriteManager::GetSprite("Water");
+
+			// Up face
+			m_Faces[(uint8_t)BlockFaceID::Up].Vertices[0].TexCoord = water->GetTextureCoords()[0];
+			m_Faces[(uint8_t)BlockFaceID::Up].Vertices[1].TexCoord = water->GetTextureCoords()[1];
+			m_Faces[(uint8_t)BlockFaceID::Up].Vertices[2].TexCoord = water->GetTextureCoords()[2];
+			m_Faces[(uint8_t)BlockFaceID::Up].Vertices[3].TexCoord = water->GetTextureCoords()[3];
+
+			// Down face
+			m_Faces[(uint8_t)BlockFaceID::Down].Vertices[0].TexCoord = water->GetTextureCoords()[0];
+			m_Faces[(uint8_t)BlockFaceID::Down].Vertices[1].TexCoord = water->GetTextureCoords()[1];
+			m_Faces[(uint8_t)BlockFaceID::Down].Vertices[2].TexCoord = water->GetTextureCoords()[2];
+			m_Faces[(uint8_t)BlockFaceID::Down].Vertices[3].TexCoord = water->GetTextureCoords()[3];
+
+			// Front face
+			m_Faces[(uint8_t)BlockFaceID::Front].Vertices[0].TexCoord = water->GetTextureCoords()[0];
+			m_Faces[(uint8_t)BlockFaceID::Front].Vertices[1].TexCoord = water->GetTextureCoords()[1];
+			m_Faces[(uint8_t)BlockFaceID::Front].Vertices[2].TexCoord = water->GetTextureCoords()[2];
+			m_Faces[(uint8_t)BlockFaceID::Front].Vertices[3].TexCoord = water->GetTextureCoords()[3];
+
+			// Back face
+			m_Faces[(uint8_t)BlockFaceID::Back].Vertices[0].TexCoord = water->GetTextureCoords()[0];
+			m_Faces[(uint8_t)BlockFaceID::Back].Vertices[1].TexCoord = water->GetTextureCoords()[1];
+			m_Faces[(uint8_t)BlockFaceID::Back].Vertices[2].TexCoord = water->GetTextureCoords()[2];
+			m_Faces[(uint8_t)BlockFaceID::Back].Vertices[3].TexCoord = water->GetTextureCoords()[3];
+
+			// Left face
+			m_Faces[(uint8_t)BlockFaceID::Left].Vertices[0].TexCoord = water->GetTextureCoords()[0];
+			m_Faces[(uint8_t)BlockFaceID::Left].Vertices[1].TexCoord = water->GetTextureCoords()[1];
+			m_Faces[(uint8_t)BlockFaceID::Left].Vertices[2].TexCoord = water->GetTextureCoords()[2];
+			m_Faces[(uint8_t)BlockFaceID::Left].Vertices[3].TexCoord = water->GetTextureCoords()[3];
+
+			// Right face
+			m_Faces[(uint8_t)BlockFaceID::Right].Vertices[0].TexCoord = water->GetTextureCoords()[0];
+			m_Faces[(uint8_t)BlockFaceID::Right].Vertices[1].TexCoord = water->GetTextureCoords()[1];
+			m_Faces[(uint8_t)BlockFaceID::Right].Vertices[2].TexCoord = water->GetTextureCoords()[2];
+			m_Faces[(uint8_t)BlockFaceID::Right].Vertices[3].TexCoord = water->GetTextureCoords()[3];
+
+			break;
+		}
+		case BlockID::Sand:
+		{
+			const Ref<SubTexture2D>& sand = SpriteManager::GetSprite("Sand");
+
+			// Up face
+			m_Faces[(uint8_t)BlockFaceID::Up].Vertices[0].TexCoord = sand->GetTextureCoords()[0];
+			m_Faces[(uint8_t)BlockFaceID::Up].Vertices[1].TexCoord = sand->GetTextureCoords()[1];
+			m_Faces[(uint8_t)BlockFaceID::Up].Vertices[2].TexCoord = sand->GetTextureCoords()[2];
+			m_Faces[(uint8_t)BlockFaceID::Up].Vertices[3].TexCoord = sand->GetTextureCoords()[3];
+
+			// Down face
+			m_Faces[(uint8_t)BlockFaceID::Down].Vertices[0].TexCoord = sand->GetTextureCoords()[0];
+			m_Faces[(uint8_t)BlockFaceID::Down].Vertices[1].TexCoord = sand->GetTextureCoords()[1];
+			m_Faces[(uint8_t)BlockFaceID::Down].Vertices[2].TexCoord = sand->GetTextureCoords()[2];
+			m_Faces[(uint8_t)BlockFaceID::Down].Vertices[3].TexCoord = sand->GetTextureCoords()[3];
+
+			// Front face
+			m_Faces[(uint8_t)BlockFaceID::Front].Vertices[0].TexCoord = sand->GetTextureCoords()[0];
+			m_Faces[(uint8_t)BlockFaceID::Front].Vertices[1].TexCoord = sand->GetTextureCoords()[1];
+			m_Faces[(uint8_t)BlockFaceID::Front].Vertices[2].TexCoord = sand->GetTextureCoords()[2];
+			m_Faces[(uint8_t)BlockFaceID::Front].Vertices[3].TexCoord = sand->GetTextureCoords()[3];
+
+			// Back face
+			m_Faces[(uint8_t)BlockFaceID::Back].Vertices[0].TexCoord = sand->GetTextureCoords()[0];
+			m_Faces[(uint8_t)BlockFaceID::Back].Vertices[1].TexCoord = sand->GetTextureCoords()[1];
+			m_Faces[(uint8_t)BlockFaceID::Back].Vertices[2].TexCoord = sand->GetTextureCoords()[2];
+			m_Faces[(uint8_t)BlockFaceID::Back].Vertices[3].TexCoord = sand->GetTextureCoords()[3];
+
+			// Left face
+			m_Faces[(uint8_t)BlockFaceID::Left].Vertices[0].TexCoord = sand->GetTextureCoords()[0];
+			m_Faces[(uint8_t)BlockFaceID::Left].Vertices[1].TexCoord = sand->GetTextureCoords()[1];
+			m_Faces[(uint8_t)BlockFaceID::Left].Vertices[2].TexCoord = sand->GetTextureCoords()[2];
+			m_Faces[(uint8_t)BlockFaceID::Left].Vertices[3].TexCoord = sand->GetTextureCoords()[3];
+
+			// Right face
+			m_Faces[(uint8_t)BlockFaceID::Right].Vertices[0].TexCoord = sand->GetTextureCoords()[0];
+			m_Faces[(uint8_t)BlockFaceID::Right].Vertices[1].TexCoord = sand->GetTextureCoords()[1];
+			m_Faces[(uint8_t)BlockFaceID::Right].Vertices[2].TexCoord = sand->GetTextureCoords()[2];
+			m_Faces[(uint8_t)BlockFaceID::Right].Vertices[3].TexCoord = sand->GetTextureCoords()[3];
 
 			break;
 		}

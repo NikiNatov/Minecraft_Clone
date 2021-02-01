@@ -33,7 +33,10 @@ enum class BlockID : uint8_t
 	Air		= 0,
 	Grass	= 1,
 	Dirt	= 2,
-	Stone	= 3
+	Stone	= 3,
+	Bedrock	= 4,
+	Water	= 5,
+	Sand	= 6,
 };
 
 class Block
@@ -42,16 +45,14 @@ public:
 	Block(BlockID id);
 
 	inline BlockID GetID() const { return m_ID; }
-	inline const BlockFace& GetFrontFace() const { return m_Faces[(uint8_t)BlockFaceID::Front]; }
-	inline const BlockFace& GetBackFace() const { return m_Faces[(uint8_t)BlockFaceID::Back]; }
-	inline const BlockFace& GetLeftFace() const { return m_Faces[(uint8_t)BlockFaceID::Left]; }
-	inline const BlockFace& GetRightFace() const { return m_Faces[(uint8_t)BlockFaceID::Right]; }
-	inline const BlockFace& GetUpFace() const { return m_Faces[(uint8_t)BlockFaceID::Up]; }
-	inline const BlockFace& GetDownFace() const { return m_Faces[(uint8_t)BlockFaceID::Down]; }
+	inline const BlockFace& GetFace(BlockFaceID id) const { return m_Faces[(uint8_t)id]; }
 public:
 	static ScopedPtr<Block> s_GrassBlock;
 	static ScopedPtr<Block> s_DirtBlock ;
 	static ScopedPtr<Block> s_StoneBlock;
+	static ScopedPtr<Block> s_BedrockBlock;
+	static ScopedPtr<Block> s_WaterBlock;
+	static ScopedPtr<Block> s_SandBlock;
 private:
 	BlockID m_ID;
 	BlockFace m_Faces[6];
