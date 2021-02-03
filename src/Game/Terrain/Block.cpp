@@ -9,6 +9,8 @@ ScopedPtr<Block> Block::s_StoneBlock;
 ScopedPtr<Block> Block::s_BedrockBlock;
 ScopedPtr<Block> Block::s_WaterBlock;
 ScopedPtr<Block> Block::s_SandBlock;
+ScopedPtr<Block> Block::s_WoodBlock;
+ScopedPtr<Block> Block::s_LeafBlock;
 
 Block::Block(BlockID id)
 	: m_ID(id)
@@ -22,6 +24,14 @@ Block::Block(BlockID id)
 	positions[5] = {  1.0f,  0.0f,  0.0f };
 	positions[6] = {  1.0f,  1.0f,  0.0f };
 	positions[7] = {  0.0f,  1.0f,  0.0f };
+	/*positions[0] = { -0.5f,  -0.5f,  0.5f };
+	positions[1] = { 0.5f,  -0.5f,  0.5f };
+	positions[2] = { 0.5f,  0.5f,  0.5f };
+	positions[3] = { -0.5f,  0.5f,  0.5f };
+	positions[4] = { -0.5f,  -0.5f,  -0.5f };
+	positions[5] = { 0.5f,  -0.5f,  -0.5f };
+	positions[6] = { 0.5f,  0.5f,  -0.5f };
+	positions[7] = { -0.5f,  0.5f,  -0.5f };*/
 
 	glm::vec3 normals[6];
 	normals[(uint8_t)BlockFaceID::Front]	= { 0.0f,  0.0f,  1.0f };
@@ -42,6 +52,11 @@ Block::Block(BlockID id)
 	m_Faces[(uint8_t)BlockFaceID::Front].Vertices[2].Normal = normals[(uint8_t)BlockFaceID::Front];
 	m_Faces[(uint8_t)BlockFaceID::Front].Vertices[3].Normal = normals[(uint8_t)BlockFaceID::Front];
 
+	m_Faces[(uint8_t)BlockFaceID::Front].Vertices[0].LightLevel = 0.8f;
+	m_Faces[(uint8_t)BlockFaceID::Front].Vertices[1].LightLevel = 0.8f;
+	m_Faces[(uint8_t)BlockFaceID::Front].Vertices[2].LightLevel = 0.8f;
+	m_Faces[(uint8_t)BlockFaceID::Front].Vertices[3].LightLevel = 0.8f;
+
 	// Back face
 	m_Faces[(uint8_t)BlockFaceID::Back].Vertices[0].Position = positions[4];
 	m_Faces[(uint8_t)BlockFaceID::Back].Vertices[1].Position = positions[5];
@@ -52,6 +67,11 @@ Block::Block(BlockID id)
 	m_Faces[(uint8_t)BlockFaceID::Back].Vertices[1].Normal = normals[(uint8_t)BlockFaceID::Back];
 	m_Faces[(uint8_t)BlockFaceID::Back].Vertices[2].Normal = normals[(uint8_t)BlockFaceID::Back];
 	m_Faces[(uint8_t)BlockFaceID::Back].Vertices[3].Normal = normals[(uint8_t)BlockFaceID::Back];
+
+	m_Faces[(uint8_t)BlockFaceID::Back].Vertices[0].LightLevel = 0.8f;
+	m_Faces[(uint8_t)BlockFaceID::Back].Vertices[1].LightLevel = 0.8f;
+	m_Faces[(uint8_t)BlockFaceID::Back].Vertices[2].LightLevel = 0.8f;
+	m_Faces[(uint8_t)BlockFaceID::Back].Vertices[3].LightLevel = 0.8f;
 
 	// Left face
 	m_Faces[(uint8_t)BlockFaceID::Left].Vertices[0].Position = positions[4];
@@ -64,6 +84,11 @@ Block::Block(BlockID id)
 	m_Faces[(uint8_t)BlockFaceID::Left].Vertices[2].Normal = normals[(uint8_t)BlockFaceID::Left];
 	m_Faces[(uint8_t)BlockFaceID::Left].Vertices[3].Normal = normals[(uint8_t)BlockFaceID::Left];
 
+	m_Faces[(uint8_t)BlockFaceID::Left].Vertices[0].LightLevel = 0.6f;
+	m_Faces[(uint8_t)BlockFaceID::Left].Vertices[1].LightLevel = 0.6f;
+	m_Faces[(uint8_t)BlockFaceID::Left].Vertices[2].LightLevel = 0.6f;
+	m_Faces[(uint8_t)BlockFaceID::Left].Vertices[3].LightLevel = 0.6f;
+
 	// Right face
 	m_Faces[(uint8_t)BlockFaceID::Right].Vertices[0].Position = positions[1];
 	m_Faces[(uint8_t)BlockFaceID::Right].Vertices[1].Position = positions[5];
@@ -74,6 +99,11 @@ Block::Block(BlockID id)
 	m_Faces[(uint8_t)BlockFaceID::Right].Vertices[1].Normal = normals[(uint8_t)BlockFaceID::Right];
 	m_Faces[(uint8_t)BlockFaceID::Right].Vertices[2].Normal = normals[(uint8_t)BlockFaceID::Right];
 	m_Faces[(uint8_t)BlockFaceID::Right].Vertices[3].Normal = normals[(uint8_t)BlockFaceID::Right];
+
+	m_Faces[(uint8_t)BlockFaceID::Right].Vertices[0].LightLevel = 0.6f;
+	m_Faces[(uint8_t)BlockFaceID::Right].Vertices[1].LightLevel = 0.6f;
+	m_Faces[(uint8_t)BlockFaceID::Right].Vertices[2].LightLevel = 0.6f;
+	m_Faces[(uint8_t)BlockFaceID::Right].Vertices[3].LightLevel = 0.6f;
 
 	// Up face
 	m_Faces[(uint8_t)BlockFaceID::Up].Vertices[0].Position = positions[3];
@@ -86,6 +116,11 @@ Block::Block(BlockID id)
 	m_Faces[(uint8_t)BlockFaceID::Up].Vertices[2].Normal = normals[(uint8_t)BlockFaceID::Up];
 	m_Faces[(uint8_t)BlockFaceID::Up].Vertices[3].Normal = normals[(uint8_t)BlockFaceID::Up];
 
+	m_Faces[(uint8_t)BlockFaceID::Up].Vertices[0].LightLevel = 1.0f;
+	m_Faces[(uint8_t)BlockFaceID::Up].Vertices[1].LightLevel = 1.0f;
+	m_Faces[(uint8_t)BlockFaceID::Up].Vertices[2].LightLevel = 1.0f;
+	m_Faces[(uint8_t)BlockFaceID::Up].Vertices[3].LightLevel = 1.0f;
+
 	// Down face
 	m_Faces[(uint8_t)BlockFaceID::Down].Vertices[0].Position = positions[0];
 	m_Faces[(uint8_t)BlockFaceID::Down].Vertices[1].Position = positions[1];
@@ -96,6 +131,11 @@ Block::Block(BlockID id)
 	m_Faces[(uint8_t)BlockFaceID::Down].Vertices[1].Normal = normals[(uint8_t)BlockFaceID::Down];
 	m_Faces[(uint8_t)BlockFaceID::Down].Vertices[2].Normal = normals[(uint8_t)BlockFaceID::Down];
 	m_Faces[(uint8_t)BlockFaceID::Down].Vertices[3].Normal = normals[(uint8_t)BlockFaceID::Down];
+
+	m_Faces[(uint8_t)BlockFaceID::Down].Vertices[0].LightLevel = 0.4f;
+	m_Faces[(uint8_t)BlockFaceID::Down].Vertices[1].LightLevel = 0.4f;
+	m_Faces[(uint8_t)BlockFaceID::Down].Vertices[2].LightLevel = 0.4f;
+	m_Faces[(uint8_t)BlockFaceID::Down].Vertices[3].LightLevel = 0.4f;
 
 	switch (id)
 	{
@@ -349,6 +389,90 @@ Block::Block(BlockID id)
 			m_Faces[(uint8_t)BlockFaceID::Right].Vertices[1].TexCoord = sand->GetTextureCoords()[1];
 			m_Faces[(uint8_t)BlockFaceID::Right].Vertices[2].TexCoord = sand->GetTextureCoords()[2];
 			m_Faces[(uint8_t)BlockFaceID::Right].Vertices[3].TexCoord = sand->GetTextureCoords()[3];
+
+			break;
+		}
+		case BlockID::Wood:
+		{
+			const Ref<SubTexture2D>& wood = SpriteManager::GetSprite("Wood");
+
+			// Up face
+			m_Faces[(uint8_t)BlockFaceID::Up].Vertices[0].TexCoord = wood->GetTextureCoords()[0];
+			m_Faces[(uint8_t)BlockFaceID::Up].Vertices[1].TexCoord = wood->GetTextureCoords()[1];
+			m_Faces[(uint8_t)BlockFaceID::Up].Vertices[2].TexCoord = wood->GetTextureCoords()[2];
+			m_Faces[(uint8_t)BlockFaceID::Up].Vertices[3].TexCoord = wood->GetTextureCoords()[3];
+
+			// Down face
+			m_Faces[(uint8_t)BlockFaceID::Down].Vertices[0].TexCoord = wood->GetTextureCoords()[0];
+			m_Faces[(uint8_t)BlockFaceID::Down].Vertices[1].TexCoord = wood->GetTextureCoords()[1];
+			m_Faces[(uint8_t)BlockFaceID::Down].Vertices[2].TexCoord = wood->GetTextureCoords()[2];
+			m_Faces[(uint8_t)BlockFaceID::Down].Vertices[3].TexCoord = wood->GetTextureCoords()[3];
+
+			// Front face
+			m_Faces[(uint8_t)BlockFaceID::Front].Vertices[0].TexCoord = wood->GetTextureCoords()[0];
+			m_Faces[(uint8_t)BlockFaceID::Front].Vertices[1].TexCoord = wood->GetTextureCoords()[1];
+			m_Faces[(uint8_t)BlockFaceID::Front].Vertices[2].TexCoord = wood->GetTextureCoords()[2];
+			m_Faces[(uint8_t)BlockFaceID::Front].Vertices[3].TexCoord = wood->GetTextureCoords()[3];
+
+			// Back face
+			m_Faces[(uint8_t)BlockFaceID::Back].Vertices[0].TexCoord = wood->GetTextureCoords()[0];
+			m_Faces[(uint8_t)BlockFaceID::Back].Vertices[1].TexCoord = wood->GetTextureCoords()[1];
+			m_Faces[(uint8_t)BlockFaceID::Back].Vertices[2].TexCoord = wood->GetTextureCoords()[2];
+			m_Faces[(uint8_t)BlockFaceID::Back].Vertices[3].TexCoord = wood->GetTextureCoords()[3];
+
+			// Left face
+			m_Faces[(uint8_t)BlockFaceID::Left].Vertices[0].TexCoord = wood->GetTextureCoords()[0];
+			m_Faces[(uint8_t)BlockFaceID::Left].Vertices[1].TexCoord = wood->GetTextureCoords()[1];
+			m_Faces[(uint8_t)BlockFaceID::Left].Vertices[2].TexCoord = wood->GetTextureCoords()[2];
+			m_Faces[(uint8_t)BlockFaceID::Left].Vertices[3].TexCoord = wood->GetTextureCoords()[3];
+
+			// Right face
+			m_Faces[(uint8_t)BlockFaceID::Right].Vertices[0].TexCoord = wood->GetTextureCoords()[0];
+			m_Faces[(uint8_t)BlockFaceID::Right].Vertices[1].TexCoord = wood->GetTextureCoords()[1];
+			m_Faces[(uint8_t)BlockFaceID::Right].Vertices[2].TexCoord = wood->GetTextureCoords()[2];
+			m_Faces[(uint8_t)BlockFaceID::Right].Vertices[3].TexCoord = wood->GetTextureCoords()[3];
+
+			break;
+		}
+		case BlockID::Leaf:
+		{
+			const Ref<SubTexture2D>& leaf = SpriteManager::GetSprite("Leaf");
+
+			// Up face
+			m_Faces[(uint8_t)BlockFaceID::Up].Vertices[0].TexCoord = leaf->GetTextureCoords()[0];
+			m_Faces[(uint8_t)BlockFaceID::Up].Vertices[1].TexCoord = leaf->GetTextureCoords()[1];
+			m_Faces[(uint8_t)BlockFaceID::Up].Vertices[2].TexCoord = leaf->GetTextureCoords()[2];
+			m_Faces[(uint8_t)BlockFaceID::Up].Vertices[3].TexCoord = leaf->GetTextureCoords()[3];
+
+			// Down face
+			m_Faces[(uint8_t)BlockFaceID::Down].Vertices[0].TexCoord = leaf->GetTextureCoords()[0];
+			m_Faces[(uint8_t)BlockFaceID::Down].Vertices[1].TexCoord = leaf->GetTextureCoords()[1];
+			m_Faces[(uint8_t)BlockFaceID::Down].Vertices[2].TexCoord = leaf->GetTextureCoords()[2];
+			m_Faces[(uint8_t)BlockFaceID::Down].Vertices[3].TexCoord = leaf->GetTextureCoords()[3];
+
+			// Front face
+			m_Faces[(uint8_t)BlockFaceID::Front].Vertices[0].TexCoord = leaf->GetTextureCoords()[0];
+			m_Faces[(uint8_t)BlockFaceID::Front].Vertices[1].TexCoord = leaf->GetTextureCoords()[1];
+			m_Faces[(uint8_t)BlockFaceID::Front].Vertices[2].TexCoord = leaf->GetTextureCoords()[2];
+			m_Faces[(uint8_t)BlockFaceID::Front].Vertices[3].TexCoord = leaf->GetTextureCoords()[3];
+
+			// Back face
+			m_Faces[(uint8_t)BlockFaceID::Back].Vertices[0].TexCoord = leaf->GetTextureCoords()[0];
+			m_Faces[(uint8_t)BlockFaceID::Back].Vertices[1].TexCoord = leaf->GetTextureCoords()[1];
+			m_Faces[(uint8_t)BlockFaceID::Back].Vertices[2].TexCoord = leaf->GetTextureCoords()[2];
+			m_Faces[(uint8_t)BlockFaceID::Back].Vertices[3].TexCoord = leaf->GetTextureCoords()[3];
+
+			// Left face
+			m_Faces[(uint8_t)BlockFaceID::Left].Vertices[0].TexCoord = leaf->GetTextureCoords()[0];
+			m_Faces[(uint8_t)BlockFaceID::Left].Vertices[1].TexCoord = leaf->GetTextureCoords()[1];
+			m_Faces[(uint8_t)BlockFaceID::Left].Vertices[2].TexCoord = leaf->GetTextureCoords()[2];
+			m_Faces[(uint8_t)BlockFaceID::Left].Vertices[3].TexCoord = leaf->GetTextureCoords()[3];
+
+			// Right face
+			m_Faces[(uint8_t)BlockFaceID::Right].Vertices[0].TexCoord = leaf->GetTextureCoords()[0];
+			m_Faces[(uint8_t)BlockFaceID::Right].Vertices[1].TexCoord = leaf->GetTextureCoords()[1];
+			m_Faces[(uint8_t)BlockFaceID::Right].Vertices[2].TexCoord = leaf->GetTextureCoords()[2];
+			m_Faces[(uint8_t)BlockFaceID::Right].Vertices[3].TexCoord = leaf->GetTextureCoords()[3];
 
 			break;
 		}

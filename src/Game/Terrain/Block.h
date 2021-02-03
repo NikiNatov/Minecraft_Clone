@@ -10,6 +10,7 @@ struct Vertex
 	glm::vec3 Position;
 	glm::vec2 TexCoord;
 	glm::vec3 Normal;
+	float LightLevel;
 };
 
 enum class BlockFaceID : uint8_t
@@ -37,6 +38,8 @@ enum class BlockID : uint8_t
 	Bedrock	= 4,
 	Water	= 5,
 	Sand	= 6,
+	Wood	= 7,
+	Leaf	= 8,
 };
 
 class Block
@@ -53,6 +56,8 @@ public:
 	static ScopedPtr<Block> s_BedrockBlock;
 	static ScopedPtr<Block> s_WaterBlock;
 	static ScopedPtr<Block> s_SandBlock;
+	static ScopedPtr<Block> s_WoodBlock;
+	static ScopedPtr<Block> s_LeafBlock;
 private:
 	BlockID m_ID;
 	BlockFace m_Faces[6];

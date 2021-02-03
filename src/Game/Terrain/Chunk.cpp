@@ -20,7 +20,7 @@ Chunk::Chunk(const glm::vec3& gridPosition)
 	}
 
 	GenerateBlocks();
-	CreateMesh();
+	CreateMeshData();
 }
 
 Chunk::~Chunk()
@@ -41,7 +41,7 @@ void Chunk::OnUpdate(float dt)
 {
 }
 
-void Chunk::CreateMesh()
+void Chunk::CreateMeshData()
 {
 	for (uint8_t x = 0; x < WIDTH; x++)
 	{
@@ -61,6 +61,8 @@ void Chunk::CreateMesh()
 						case BlockID::Bedrock:	block = Block::s_BedrockBlock.get(); break;
 						case BlockID::Water:	block = Block::s_WaterBlock.get(); break;
 						case BlockID::Sand:		block = Block::s_SandBlock.get(); break;
+						case BlockID::Wood:		block = Block::s_WoodBlock.get(); break;
+						case BlockID::Leaf:		block = Block::s_LeafBlock.get(); break;
 					}
 
 					if (x == 0 || (x - 1 >= 0 && m_Blocks[x - 1][y][z] == BlockID::Air))
@@ -80,22 +82,6 @@ void Chunk::CreateMesh()
 			}
 		}
 	}
-
-	Ref<VertexBuffer> vb = CreateRef<VertexBuffer>(m_Vertices.data(), m_Vertices.size() * sizeof(Vertex));
-	vb->SetLayout(
-	{
-			{"a_Position", DataType::Float3, false},
-			{"a_TexCoords", DataType::Float2, false},
-			{"a_Normal", DataType::Float3, false},
-	});
-
-	Ref<IndexBuffer> ib = CreateRef<IndexBuffer>(m_Indices.data(), m_Indices.size());
-
-	m_VAO = CreateRef<VertexArray>();
-	m_VAO->Bind();
-	m_VAO->SetVertexBuffer(vb);
-	m_VAO->SetIndexBuffer(ib);
-	m_VAO->Unbind();
 }
 
 void Chunk::AddFace(const BlockFace& face, const glm::vec3& blockPosition)
@@ -116,12 +102,32 @@ void Chunk::AddFace(const BlockFace& face, const glm::vec3& blockPosition)
 	m_IndicesCount += 4;
 }
 
+void Chunk::InitializeVAO()
+{
+	Ref<VertexBuffer> vb = CreateRef<VertexBuffer>(m_Vertices.data(), m_Vertices.size() * sizeof(Vertex));
+	vb->SetLayout(
+		{
+				{"a_Position", DataType::Float3, false},
+				{"a_TexCoords", DataType::Float2, false},
+				{"a_Normal", DataType::Float3, false},
+				{"a_LightLevel", DataType::Float, false}
+		});
+
+	Ref<IndexBuffer> ib = CreateRef<IndexBuffer>(m_Indices.data(), m_Indices.size());
+
+	m_VAO = CreateRef<VertexArray>();
+	m_VAO->Bind();
+	m_VAO->SetVertexBuffer(vb);
+	m_VAO->SetIndexBuffer(ib);
+	m_VAO->Unbind();
+}
+
 void Chunk::GenerateBlocks()
 {
 	uint8_t heights[WIDTH][DEPTH];
 
-	Noise noise1(1231, 6, 110, 205, 0.38, 18);
-	Noise noise2(1231, 4, 30, 200, 0.15, 0);
+	Noise noise1(111, 6, 110, 205, 0.38, 18);
+	Noise noise2(111, 4, 30, 200, 0.15, 0);
 
 	for (uint8_t x = 0; x < WIDTH; x++)
 	{
@@ -138,26 +144,62 @@ void Chunk::GenerateBlocks()
 		}
 	}
 
+	srand(time(0));
+	
 	for (uint8_t x = 0; x < WIDTH; x++)
 	{
 		for (uint8_t z = 0; z < DEPTH; z++)
 		{
 			for (uint8_t y = 0; y < HEIGHT; y++)
 			{	
-				if(y > heights[x][z] && y < WATER_LEVEL)
+				if (y > heights[x][z] && y > WATER_LEVEL && m_Blocks[x][y][z] != BlockID::Wood && m_Blocks[x][y][z] != BlockID::Leaf)
+					m_Blocks[x][y][z] = BlockID::Air;
+				else if(y > heights[x][z] && y <= WATER_LEVEL)
 					m_Blocks[x][y][z] = BlockID::Water;
 				else if (y == heights[x][z] && y < WATER_LEVEL + 2)
 					m_Blocks[x][y][z] = BlockID::Sand;
 				else if (y == heights[x][z])
+				{
 					m_Blocks[x][y][z] = BlockID::Grass;
+
+					if (x >= 3 && x <= WIDTH - 3 && z >= 3 && z <= DEPTH - 3)
+					{
+						int randNum = rand() % 100 + 1;
+
+						if (randNum > 90)
+						{
+							int treeHeight = rand() % 6 + 4;
+
+							// Tree trunk
+							for (int i = 1; i <= treeHeight; i++)
+								m_Blocks[x][y + i][z] = BlockID::Wood;
+
+							// Tree crown
+							for(int i = x - 2 ; i <= x + 2; i++)
+								for (int j = z - 2; j <= z + 2; j++)
+								{
+									m_Blocks[i][y + treeHeight + 1][j] = BlockID::Leaf;
+									m_Blocks[i][y + treeHeight + 2][j] = BlockID::Leaf;
+								}
+
+							for (int i = x - 1; i <= x + 1; i++)
+								for (int j = z - 1; j <= z + 1; j++)
+									m_Blocks[i][y + treeHeight + 3][j] = BlockID::Leaf;
+
+							for(int i = x - 1; i <= x + 1; i++)
+								m_Blocks[i][y + treeHeight + 4][z] = BlockID::Leaf;
+
+							for (int i = z - 1; i <= z + 1; i++)
+								m_Blocks[x][y + treeHeight + 4][i] = BlockID::Leaf;
+						}
+					}
+				}
 				else if (y < heights[x][z] && y >= heights[x][z] - 5)
 					m_Blocks[x][y][z] = BlockID::Dirt;
 				else if (y >= 3 && y < heights[x][z] - 5)
 					m_Blocks[x][y][z] = BlockID::Stone;
 				else if (y < 3)
 					m_Blocks[x][y][z] = BlockID::Bedrock;
-				else 
-					m_Blocks[x][y][z] = BlockID::Air;
 			}
 		}
 	}

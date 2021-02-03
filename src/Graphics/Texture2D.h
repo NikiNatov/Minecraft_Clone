@@ -13,7 +13,9 @@ enum class TextureFilter
 {
 	None = 0,
 	Nearest,
+	MipmapNearest,
 	Linear,
+	MipmapLinear
 };
 
 enum class TextureWrap

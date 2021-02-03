@@ -35,6 +35,8 @@ void Renderer::Present()
 		command.Shader->SetMat4("u_Transform", 1, command.Transform);
 		command.VAO->Bind();
 		glDrawElements(GL_TRIANGLES, command.VAO->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+		command.VAO->Unbind();
+
 	}
 }
 

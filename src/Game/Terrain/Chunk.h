@@ -17,10 +17,12 @@ public:
 	void OnUpdate(float dt);
 	void AddFace(const BlockFace& face, const glm::vec3& blockPosition);
 
+	void InitializeVAO();
+
 	inline const Ref<VertexArray>& GetVAO() const { return m_VAO; }
 	inline const glm::vec3& GetGridPosition() const { return m_GridPosition; }
 private:
-	void CreateMesh();
+	void CreateMeshData();
 	void GenerateBlocks();
 public:
 	static const uint8_t WIDTH = 16;
