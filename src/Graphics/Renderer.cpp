@@ -8,7 +8,8 @@ std::vector<RenderCommand> Renderer::s_RenderCommandQueue;
 
 void Renderer::Init()
 {
-	glDisable(GL_CULL_FACE);
+	s_SceneData->ChunkShader = CreateRef<Shader>("assets/shaders/ChunkShader.glsl");
+
 	glEnable(GL_DEPTH_TEST);
 	s_RenderCommandQueue.reserve(1000);
 }
@@ -20,6 +21,10 @@ void Renderer::BeginScene(const FPSCamera& camera)
 	s_SceneData->ViewProjectionMatrix = s_SceneData->ProjectionMatrix * s_SceneData->ViewMatrix;
 
 	s_RenderCommandQueue.clear();
+
+	s_SceneData->ChunkShader->Bind();
+
+	glDisable(GL_BLEND);
 }
 
 void Renderer::EndScene()
@@ -30,21 +35,19 @@ void Renderer::Present()
 {
 	for (auto& command : s_RenderCommandQueue)
 	{
-		command.Shader->Bind();
-		command.Shader->SetMat4("u_ViewProjection", 1, s_SceneData->ViewProjectionMatrix);
-		command.Shader->SetMat4("u_Transform", 1, command.Transform);
+		s_SceneData->ChunkShader->SetMat4("u_ViewProjection", 1, s_SceneData->ViewProjectionMatrix);
+		s_SceneData->ChunkShader->SetMat4("u_Transform", 1, command.Transform);
+		s_SceneData->ChunkShader->SetInt("u_Texture", 0);
 		command.VAO->Bind();
 		glDrawElements(GL_TRIANGLES, command.VAO->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
 		command.VAO->Unbind();
-
 	}
 }
 
-void Renderer::Submit(const Ref<VertexArray>& vao, const Ref<Shader>& shader, const glm::mat4& transform)
+void Renderer::Submit(const Ref<VertexArray>& vao, const glm::mat4& transform)
 {
 	RenderCommand command;
 	command.VAO = vao;
-	command.Shader = shader;
 	command.Transform = transform;
 	s_RenderCommandQueue.emplace_back(command);
 }

@@ -35,6 +35,8 @@ Chunk::~Chunk()
 	}
 
 	delete[] m_Blocks;
+
+	m_Blocks = nullptr;
 }
 
 void Chunk::OnUpdate(float dt)
@@ -43,6 +45,10 @@ void Chunk::OnUpdate(float dt)
 
 void Chunk::CreateMeshData()
 {
+	m_Indices.clear();
+	m_Vertices.clear();
+	m_IndicesCount = 0;
+
 	for (uint8_t x = 0; x < WIDTH; x++)
 	{
 		for (uint8_t y = 0; y < HEIGHT; y++)

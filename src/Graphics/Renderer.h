@@ -14,12 +14,12 @@ struct SceneData
 	glm::mat4 ProjectionMatrix;
 	glm::mat4 ViewMatrix;
 	glm::mat4 ViewProjectionMatrix;
+	Ref<Shader> ChunkShader;
 };
 
 struct RenderCommand
 {
 	Ref<VertexArray> VAO;
-	Ref<Shader> Shader;
 	glm::mat4 Transform;
 };
 
@@ -32,7 +32,7 @@ public:
 	static void EndScene();
 	static void Present();
 
-	static void Submit(const Ref<VertexArray>& vao, const Ref<Shader>& shader, const glm::mat4& transform);
+	static void Submit(const Ref<VertexArray>& vao, const glm::mat4& transform);
 	static void SetViewportSize(int x, int y, int width, int height);
 	static void ClearScreen(const glm::vec4& color);
 private:

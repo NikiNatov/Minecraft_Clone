@@ -5,6 +5,7 @@
 #include "Core\Layer.h"
 #include "Core\Events\KeyEvent.h"
 #include "Core\Events\WindowEvent.h"
+#include "Core\Events\MouseEvent.h"
 
 #include "Graphics\Shader.h"
 #include "Graphics\Texture2D.h"
@@ -33,14 +34,17 @@ public:
 	void LoadChunks();
 private:
 	bool OnWindowResized(WindowResizedEvent& e);
+	bool OnMouseButtonClicked(MouseButtonPressedEvent& e);
 private:
-	Ref<Shader> m_ChunkShader;
 	Ref<Texture2D> m_SpriteSheet;
+	Ref<Texture2D> m_CrosshairTexture;
+	Ref<Texture2D> m_ItemBoxTexture;
 	std::unordered_map<glm::vec2, Ref<Chunk>, Vec2Hash> m_ChunkMap;
 	FPSCamera m_Camera;
 	glm::ivec2 m_LastChunkPos = { 0, 0 };
 
-	int m_ChunkRenderDistance = 6;
+	int m_ChunkRenderDistance = 8;
+	float m_BreakDistance = 8.0f;
 
 	std::mutex m_Mutex;
 	std::thread m_ChunkThread;

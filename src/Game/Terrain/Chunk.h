@@ -21,8 +21,10 @@ public:
 
 	inline const Ref<VertexArray>& GetVAO() const { return m_VAO; }
 	inline const glm::vec3& GetGridPosition() const { return m_GridPosition; }
-private:
+	inline BlockID GetBlock(int x, int y, int z) const { return m_Blocks[x][y][z]; }
+	inline void SetBlock(int x, int y, int z, BlockID id) const { m_Blocks[x][y][z] = id; }
 	void CreateMeshData();
+private:
 	void GenerateBlocks();
 public:
 	static const uint8_t WIDTH = 16;

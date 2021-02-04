@@ -17,11 +17,11 @@ public:
 
 	inline const glm::mat4& GetProjectionMatrix() const { return m_ProjectionMatrix; }
 	inline const glm::mat4& GetViewMatrix() const { return m_ViewMatrix; }
-private:
 	glm::quat GetOrientation() const;
 	glm::vec3 GetCameraUp() const;
 	glm::vec3 GetCameraRight() const;
 	glm::vec3 GetCameraFront() const;
+private:
 private:
 	glm::vec3 m_Position;
 	glm::vec3 m_Rotation;

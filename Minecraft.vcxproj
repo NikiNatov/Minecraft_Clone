@@ -106,6 +106,7 @@
     <ClCompile Include="src\Graphics\GraphicsContext.cpp" />
     <ClCompile Include="src\Graphics\IndexBuffer.cpp" />
     <ClCompile Include="src\Graphics\Renderer.cpp" />
+    <ClCompile Include="src\Graphics\Renderer2D.cpp" />
     <ClCompile Include="src\Graphics\Shader.cpp" />
     <ClCompile Include="src\Graphics\SpriteManager.cpp" />
     <ClCompile Include="src\Graphics\SubTexture2D.cpp" />
@@ -139,6 +140,7 @@
     <ClInclude Include="src\Graphics\GraphicsContext.h" />
     <ClInclude Include="src\Graphics\IndexBuffer.h" />
     <ClInclude Include="src\Graphics\Renderer.h" />
+    <ClInclude Include="src\Graphics\Renderer2D.h" />
     <ClInclude Include="src\Graphics\Shader.h" />
     <ClInclude Include="src\Graphics\SubTexture2D.h" />
     <ClInclude Include="src\Graphics\Texture2D.h" />

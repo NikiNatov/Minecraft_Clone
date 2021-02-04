@@ -24,14 +24,6 @@ Block::Block(BlockID id)
 	positions[5] = {  1.0f,  0.0f,  0.0f };
 	positions[6] = {  1.0f,  1.0f,  0.0f };
 	positions[7] = {  0.0f,  1.0f,  0.0f };
-	/*positions[0] = { -0.5f,  -0.5f,  0.5f };
-	positions[1] = { 0.5f,  -0.5f,  0.5f };
-	positions[2] = { 0.5f,  0.5f,  0.5f };
-	positions[3] = { -0.5f,  0.5f,  0.5f };
-	positions[4] = { -0.5f,  -0.5f,  -0.5f };
-	positions[5] = { 0.5f,  -0.5f,  -0.5f };
-	positions[6] = { 0.5f,  0.5f,  -0.5f };
-	positions[7] = { -0.5f,  0.5f,  -0.5f };*/
 
 	glm::vec3 normals[6];
 	normals[(uint8_t)BlockFaceID::Front]	= { 0.0f,  0.0f,  1.0f };

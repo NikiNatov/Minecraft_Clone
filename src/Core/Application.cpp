@@ -12,6 +12,7 @@
 
 #include "Game\GameLayer.h"
 #include "Graphics\Renderer.h"
+#include "Graphics\Renderer2D.h"
 
 Application* Application::s_Instance = nullptr;
 
@@ -25,6 +26,7 @@ Application::Application()
 	m_Window = CreateScoped<Window>(properties);
 
 	Renderer::Init();
+	Renderer2D::Init();
 
 	PushLayer(new GameLayer());
 }
