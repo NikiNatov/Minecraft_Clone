@@ -31,15 +31,15 @@ struct BlockFace
 
 enum class BlockID : uint8_t
 {
-	Air		= 0,
-	Grass	= 1,
-	Dirt	= 2,
-	Stone	= 3,
-	Bedrock	= 4,
-	Water	= 5,
-	Sand	= 6,
-	Wood	= 7,
-	Leaf	= 8,
+	Air		= -1,
+	Grass	=  0,
+	Dirt	=  1,
+	Stone	=  2,
+	Bedrock	=  3,
+	Water	=  4,
+	Sand	=  5,
+	Wood	=  6,
+	Leaf	=  7,
 };
 
 class Block
@@ -49,15 +49,11 @@ public:
 
 	inline BlockID GetID() const { return m_ID; }
 	inline const BlockFace& GetFace(BlockFaceID id) const { return m_Faces[(uint8_t)id]; }
+	void SetBlockTextures(BlockID block);
+
+	static void CreateBlockTemplates();
 public:
-	static ScopedPtr<Block> s_GrassBlock;
-	static ScopedPtr<Block> s_DirtBlock ;
-	static ScopedPtr<Block> s_StoneBlock;
-	static ScopedPtr<Block> s_BedrockBlock;
-	static ScopedPtr<Block> s_WaterBlock;
-	static ScopedPtr<Block> s_SandBlock;
-	static ScopedPtr<Block> s_WoodBlock;
-	static ScopedPtr<Block> s_LeafBlock;
+	static std::vector<ScopedPtr<Block>> s_Blocks;
 private:
 	BlockID m_ID;
 	BlockFace m_Faces[6];

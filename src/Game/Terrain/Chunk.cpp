@@ -39,8 +39,10 @@ Chunk::~Chunk()
 	m_Blocks = nullptr;
 }
 
-void Chunk::OnUpdate(float dt)
+void Chunk::Recreate()
 {
+	CreateMeshData();
+	InitializeVAO();
 }
 
 void Chunk::CreateMeshData()
@@ -57,19 +59,7 @@ void Chunk::CreateMeshData()
 			{
 				if (m_Blocks[x][y][z] != BlockID::Air)
 				{
-					const Block* block = nullptr;
-
-					switch (m_Blocks[x][y][z])
-					{
-						case BlockID::Grass:	block = Block::s_GrassBlock.get(); break;
-						case BlockID::Dirt:		block = Block::s_DirtBlock.get(); break;
-						case BlockID::Stone:	block = Block::s_StoneBlock.get(); break;
-						case BlockID::Bedrock:	block = Block::s_BedrockBlock.get(); break;
-						case BlockID::Water:	block = Block::s_WaterBlock.get(); break;
-						case BlockID::Sand:		block = Block::s_SandBlock.get(); break;
-						case BlockID::Wood:		block = Block::s_WoodBlock.get(); break;
-						case BlockID::Leaf:		block = Block::s_LeafBlock.get(); break;
-					}
+					const Block* block = Block::s_Blocks[(uint8_t)m_Blocks[x][y][z]].get();
 
 					if (x == 0 || (x - 1 >= 0 && m_Blocks[x - 1][y][z] == BlockID::Air))
 						AddFace(block->GetFace(BlockFaceID::Left), {x , y, z});
@@ -99,7 +89,7 @@ void Chunk::AddFace(const BlockFace& face, const glm::vec3& blockPosition)
 		m_Vertices.push_back(v);
 	}
 
-	m_Indices.push_back(m_IndicesCount);
+	m_Indices.push_back(m_Indices.size() - 1);
 	m_Indices.push_back(m_IndicesCount + 1);
 	m_Indices.push_back(m_IndicesCount + 2);
 	m_Indices.push_back(m_IndicesCount + 2);
@@ -111,13 +101,12 @@ void Chunk::AddFace(const BlockFace& face, const glm::vec3& blockPosition)
 void Chunk::InitializeVAO()
 {
 	Ref<VertexBuffer> vb = CreateRef<VertexBuffer>(m_Vertices.data(), m_Vertices.size() * sizeof(Vertex));
-	vb->SetLayout(
-		{
-				{"a_Position", DataType::Float3, false},
-				{"a_TexCoords", DataType::Float2, false},
-				{"a_Normal", DataType::Float3, false},
-				{"a_LightLevel", DataType::Float, false}
-		});
+	vb->SetLayout({
+			{"a_Position", DataType::Float3, false},
+			{"a_TexCoords", DataType::Float2, false},
+			{"a_Normal", DataType::Float3, false},
+			{"a_LightLevel", DataType::Float, false}
+	});
 
 	Ref<IndexBuffer> ib = CreateRef<IndexBuffer>(m_Indices.data(), m_Indices.size());
 

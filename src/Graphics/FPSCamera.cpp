@@ -10,7 +10,7 @@
 FPSCamera::FPSCamera(const glm::vec3& position, float fov, float aspectRatio)
 	: m_Position(position)
 {
-	m_ProjectionMatrix = glm::perspective(fov, aspectRatio, 0.1f, 1000.0f);
+	m_ProjectionMatrix = glm::perspective(fov, aspectRatio, 0.01f, 1000.0f);
 	m_Rotation = glm::vec3(0.0f, 0.0f, 0.0f);
 	m_LastMousePosition = Input::GetMousePosition();
 }
@@ -45,7 +45,7 @@ void FPSCamera::OnUpdate(float dt)
 
 void FPSCamera::SetProjection(float fov, float aspectRatio)
 {
-	m_ProjectionMatrix = glm::perspective(fov, aspectRatio, 0.1f, 1000.0f);
+	m_ProjectionMatrix = glm::perspective(fov, aspectRatio, 0.01f, 1000.0f);
 }
 
 glm::quat FPSCamera::GetOrientation() const
