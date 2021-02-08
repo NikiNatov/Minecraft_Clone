@@ -89,7 +89,7 @@ void Chunk::AddFace(const BlockFace& face, const glm::vec3& blockPosition)
 		m_Vertices.push_back(v);
 	}
 
-	m_Indices.push_back(m_Indices.size() - 1);
+	m_Indices.push_back(m_IndicesCount);
 	m_Indices.push_back(m_IndicesCount + 1);
 	m_Indices.push_back(m_IndicesCount + 2);
 	m_Indices.push_back(m_IndicesCount + 2);
