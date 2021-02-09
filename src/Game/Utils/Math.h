@@ -21,6 +21,7 @@ namespace Math
 	};
 
 	glm::ivec3 GetBlockPositionInChunk(const glm::vec3& globalPosition);
+	glm::ivec3 GetBlockCoordinates(const glm::vec3& position);
 	glm::ivec2 GetChunkPositionFromWorldPosition(const glm::vec3& worldPosition);
 	std::vector<glm::vec3> CastRayAndGetIntersectingBlocks(const glm::vec3& origin, const glm::vec3& direction, float distance);
 }

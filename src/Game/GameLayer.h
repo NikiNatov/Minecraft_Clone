@@ -28,6 +28,7 @@ public:
 private:
 	bool OnWindowResized(WindowResizedEvent& e);
 	bool OnMouseButtonClicked(MouseButtonPressedEvent& e);
+	bool OnKeyPressed(KeyPressedEvent& e);
 
 	void LoadChunks();
 	void InitializeTextures();
@@ -35,6 +36,8 @@ private:
 	Ref<Texture2D> m_SpriteSheet;
 	Ref<Texture2D> m_CrosshairTexture;
 	Ref<Texture2D> m_ItemBoxTexture;
+
+	BlockID m_SelectedBlock = BlockID::Stone;
 	std::unordered_map<glm::vec2, Ref<Chunk>, Math::Vec2Hash> m_ChunkMap;
 	FPSCamera m_Camera;
 	glm::ivec2 m_LastChunkPos = { 0, 0 };

@@ -40,6 +40,8 @@ enum class BlockID : uint8_t
 	Sand	=  5,
 	Wood	=  6,
 	Leaf	=  7,
+	Plank	=  8,
+	Glass	=  9,
 };
 
 class Block

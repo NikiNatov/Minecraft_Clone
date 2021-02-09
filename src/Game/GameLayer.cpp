@@ -73,12 +73,25 @@ void GameLayer::OnUpdate(float dt)
 	// TODO: move into separate layer
 	Renderer2D::BeginScene(glm::ortho(-16.0f, 16.0f, 9.0f, -9.0f, 0.0f, 1.0f));
 	Renderer2D::DrawQuad(glm::mat4(1.0f), m_CrosshairTexture);
+	Renderer2D::DrawQuad(glm::translate(glm::mat4(1.0f), glm::vec3(-4.0f, 7.5f, 0.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.6f)), SpriteManager::GetSprite("GrassSide"));
 	Renderer2D::DrawQuad(glm::translate(glm::mat4(1.0f), glm::vec3(-4.0f, 7.5f, 0.0f)), m_ItemBoxTexture);
+
+	Renderer2D::DrawQuad(glm::translate(glm::mat4(1.0f), glm::vec3(-2.66f, 7.5f, 0.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.6f)), SpriteManager::GetSprite("Stone"));
 	Renderer2D::DrawQuad(glm::translate(glm::mat4(1.0f), glm::vec3(-2.66f, 7.5f, 0.0f)), m_ItemBoxTexture);
+
+	Renderer2D::DrawQuad(glm::translate(glm::mat4(1.0f), glm::vec3(-1.33f, 7.5f, 0.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.6f)), SpriteManager::GetSprite("Dirt"));
 	Renderer2D::DrawQuad(glm::translate(glm::mat4(1.0f), glm::vec3(-1.33f, 7.5f, 0.0f)), m_ItemBoxTexture);
+
+	Renderer2D::DrawQuad(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 7.5f, 0.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.6f)), SpriteManager::GetSprite("Sand"));
 	Renderer2D::DrawQuad(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 7.5f, 0.0f)), m_ItemBoxTexture);
+
+	Renderer2D::DrawQuad(glm::translate(glm::mat4(1.0f), glm::vec3(1.33f, 7.5f, 0.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.6f)), SpriteManager::GetSprite("Wood"));
 	Renderer2D::DrawQuad(glm::translate(glm::mat4(1.0f), glm::vec3(1.33f, 7.5f, 0.0f)), m_ItemBoxTexture);
+
+	Renderer2D::DrawQuad(glm::translate(glm::mat4(1.0f), glm::vec3(2.66f, 7.5f, 0.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.6f)), SpriteManager::GetSprite("Plank"));
 	Renderer2D::DrawQuad(glm::translate(glm::mat4(1.0f), glm::vec3(2.66f, 7.5f, 0.0f)), m_ItemBoxTexture);
+
+	Renderer2D::DrawQuad(glm::translate(glm::mat4(1.0f), glm::vec3(4.0f, 7.5f, 0.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.6f)), SpriteManager::GetSprite("Glass"));
 	Renderer2D::DrawQuad(glm::translate(glm::mat4(1.0f), glm::vec3(4.0f, 7.5f, 0.0f)), m_ItemBoxTexture);
 }
 
@@ -91,6 +104,7 @@ void GameLayer::OnEvent(Event& e)
 	EventDispatcher dispatcher(e);
 	dispatcher.Dispatch<WindowResizedEvent>(BIND_FN(GameLayer::OnWindowResized));
 	dispatcher.Dispatch<MouseButtonPressedEvent>(BIND_FN(GameLayer::OnMouseButtonClicked));
+	dispatcher.Dispatch<KeyPressedEvent>(BIND_FN(GameLayer::OnKeyPressed));
 }
 
 bool GameLayer::OnWindowResized(WindowResizedEvent& e)
@@ -113,7 +127,7 @@ bool GameLayer::OnMouseButtonClicked(MouseButtonPressedEvent& e)
 		Ref<Chunk> chunk = m_ChunkMap[chunkPos];
 		BlockID block = (chunk->GetBlock(localPos.x, localPos.y, localPos.z));
 
-		if (block != BlockID::Air)
+		if (block != BlockID::Air && block != BlockID::Water)
 		{
 			if (e.GetButton() == Mouse::ButtonLeft)
 			{
@@ -126,13 +140,33 @@ bool GameLayer::OnMouseButtonClicked(MouseButtonPressedEvent& e)
 				glm::ivec2 newBlockChunkPos = Math::GetChunkPositionFromWorldPosition(prevPosition);
 				chunk = m_ChunkMap[newBlockChunkPos];
 
-				chunk->SetBlock(newBlockLocalPos.x, newBlockLocalPos.y, newBlockLocalPos.z, BlockID::Stone);
+				chunk->SetBlock(newBlockLocalPos.x, newBlockLocalPos.y, newBlockLocalPos.z, m_SelectedBlock);
 				chunk->Recreate();
 			}
 			break;
 		}
 		prevPosition = currentPosition;
 	}
+
+	return false;
+}
+
+bool GameLayer::OnKeyPressed(KeyPressedEvent& e)
+{
+	if (e.GetKeyCode() == Key::D1)
+		m_SelectedBlock = BlockID::Grass;
+	else if (e.GetKeyCode() == Key::D2)
+		m_SelectedBlock = BlockID::Stone;
+	else if (e.GetKeyCode() == Key::D3)
+		m_SelectedBlock = BlockID::Dirt;
+	else if (e.GetKeyCode() == Key::D4)
+		m_SelectedBlock = BlockID::Sand;
+	else if (e.GetKeyCode() == Key::D5)
+		m_SelectedBlock = BlockID::Wood;
+	else if (e.GetKeyCode() == Key::D6)
+		m_SelectedBlock = BlockID::Plank;
+	else if (e.GetKeyCode() == Key::D7)
+		m_SelectedBlock = BlockID::Glass;
 
 	return false;
 }
@@ -201,6 +235,8 @@ void GameLayer::InitializeTextures()
 	SpriteManager::AddSprite("WoodTop", CreateRef<SubTexture2D>(m_SpriteSheet, 5, 14, 64, 64));
 	SpriteManager::AddSprite("Wood", CreateRef<SubTexture2D>(m_SpriteSheet, 4, 8, 64, 64));
 	SpriteManager::AddSprite("Leaf", CreateRef<SubTexture2D>(m_SpriteSheet, 4, 12, 64, 64));
+	SpriteManager::AddSprite("Plank", CreateRef<SubTexture2D>(m_SpriteSheet, 4, 15, 64, 64));
+	SpriteManager::AddSprite("Glass", CreateRef<SubTexture2D>(m_SpriteSheet, 1, 12, 64, 64));
 }
 
 #pragma endregion

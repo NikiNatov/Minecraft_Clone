@@ -187,6 +187,26 @@ void Block::SetBlockTextures(BlockID block)
 			backFace	= SpriteManager::GetSprite("Leaf");
 			break;
 		}
+		case BlockID::Plank:
+		{
+			upFace		= SpriteManager::GetSprite("Plank");
+			downFace	= SpriteManager::GetSprite("Plank");
+			leftFace	= SpriteManager::GetSprite("Plank");
+			rightFace	= SpriteManager::GetSprite("Plank");
+			frontFace	= SpriteManager::GetSprite("Plank");
+			backFace	= SpriteManager::GetSprite("Plank");
+			break;
+		}
+		case BlockID::Glass:
+		{
+			upFace		= SpriteManager::GetSprite("Glass");
+			downFace	= SpriteManager::GetSprite("Glass");
+			leftFace	= SpriteManager::GetSprite("Glass");
+			rightFace	= SpriteManager::GetSprite("Glass");
+			frontFace	= SpriteManager::GetSprite("Glass");
+			backFace	= SpriteManager::GetSprite("Glass");
+			break;
+		}
 	}
 
 	for (int i = 0; i < 4; i++)
@@ -202,7 +222,7 @@ void Block::SetBlockTextures(BlockID block)
 
 void Block::CreateBlockTemplates()
 {
-	s_Blocks.resize(8);
+	s_Blocks.resize(10);
 
 	s_Blocks[(uint8_t)BlockID::Grass]		= CreateScoped<Block>(BlockID::Grass);
 	s_Blocks[(uint8_t)BlockID::Dirt]		= CreateScoped<Block>(BlockID::Dirt);
@@ -212,4 +232,6 @@ void Block::CreateBlockTemplates()
 	s_Blocks[(uint8_t)BlockID::Sand]		= CreateScoped<Block>(BlockID::Sand);
 	s_Blocks[(uint8_t)BlockID::Wood]		= CreateScoped<Block>(BlockID::Wood);
 	s_Blocks[(uint8_t)BlockID::Leaf]		= CreateScoped<Block>(BlockID::Leaf);
+	s_Blocks[(uint8_t)BlockID::Plank]		= CreateScoped<Block>(BlockID::Plank);
+	s_Blocks[(uint8_t)BlockID::Glass]		= CreateScoped<Block>(BlockID::Glass);
 }

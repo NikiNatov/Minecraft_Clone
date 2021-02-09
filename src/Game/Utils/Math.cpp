@@ -14,6 +14,11 @@ namespace Math
         };
     }
 
+	glm::ivec3 GetBlockCoordinates(const glm::vec3& position)
+	{
+		return { (int)std::floor(position.x), (int)std::floor(position.y), (int)std::floor(position.z) };
+	}
+
     glm::ivec2 GetChunkPositionFromWorldPosition(const glm::vec3& worldPosition)
     {
         int x, z;
@@ -34,7 +39,7 @@ namespace Math
 
     std::vector<glm::vec3> CastRayAndGetIntersectingBlocks(const glm::vec3& origin, const glm::vec3& direction, float distance)
     {
-		glm::ivec3 currentCubePosition = { (int)std::floor(origin.x), (int)std::floor(origin.y), (int)std::floor(origin.z) };
+		glm::ivec3 currentCubePosition = GetBlockCoordinates(origin);
 		glm::vec3 endPoint = origin + distance * direction;
 
 		int stepX = direction.x > 0.0f ? 1 : (direction.x < 0.0f ? -1 : 0);
