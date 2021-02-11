@@ -98,12 +98,17 @@
     <ClCompile Include="src\Core\EntryPoint.cpp" />
     <ClCompile Include="src\Core\Input.cpp" />
     <ClCompile Include="src\Core\LayerStack.cpp" />
+    <ClCompile Include="src\Game\Entity\Component\CameraComponent.cpp" />
+    <ClCompile Include="src\Game\Entity\Component\ScriptComponent.cpp" />
+    <ClCompile Include="src\Game\Entity\Component\TransformComponent.cpp" />
+    <ClCompile Include="src\Game\Entity\Entity.cpp" />
     <ClCompile Include="src\Game\Terrain\Block.cpp" />
     <ClCompile Include="src\Game\Terrain\Chunk.cpp" />
     <ClCompile Include="src\Game\GameLayer.cpp" />
     <ClCompile Include="src\Game\Terrain\Noise.cpp" />
+    <ClCompile Include="src\Game\Terrain\World.cpp" />
     <ClCompile Include="src\Game\Utils\Math.cpp" />
-    <ClCompile Include="src\Graphics\FPSCamera.cpp" />
+    <ClCompile Include="src\Graphics\Camera.cpp" />
     <ClCompile Include="src\Graphics\GraphicsContext.cpp" />
     <ClCompile Include="src\Graphics\IndexBuffer.cpp" />
     <ClCompile Include="src\Graphics\Renderer.cpp" />
@@ -122,6 +127,8 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="assets\scripts\FPSCameraScript.h" />
+    <ClInclude Include="assets\scripts\PlayerScript.h" />
     <ClInclude Include="src\Core\Application.h" />
     <ClInclude Include="src\Core\Base.h" />
     <ClInclude Include="src\Core\Events\Event.h" />
@@ -133,12 +140,19 @@
     <ClInclude Include="src\Core\Layer.h" />
     <ClInclude Include="src\Core\LayerStack.h" />
     <ClInclude Include="src\Core\MouseCodes.h" />
+    <ClInclude Include="src\Game\Entity\Component\CameraComponent.h" />
+    <ClInclude Include="src\Game\Entity\Component\Component.h" />
+    <ClInclude Include="src\Game\Entity\Component\ScriptComponent.h" />
+    <ClInclude Include="src\Game\Entity\Component\TransformComponent.h" />
+    <ClInclude Include="src\Game\Entity\Entity.h" />
+    <ClInclude Include="src\Game\Entity\Script.h" />
     <ClInclude Include="src\Game\Terrain\Block.h" />
     <ClInclude Include="src\Game\Terrain\Chunk.h" />
     <ClInclude Include="src\Game\GameLayer.h" />
     <ClInclude Include="src\Game\Terrain\Noise.h" />
+    <ClInclude Include="src\Game\Terrain\World.h" />
     <ClInclude Include="src\Game\Utils\Math.h" />
-    <ClInclude Include="src\Graphics\FPSCamera.h" />
+    <ClInclude Include="src\Graphics\Camera.h" />
     <ClInclude Include="src\Graphics\GraphicsContext.h" />
     <ClInclude Include="src\Graphics\IndexBuffer.h" />
     <ClInclude Include="src\Graphics\Renderer.h" />

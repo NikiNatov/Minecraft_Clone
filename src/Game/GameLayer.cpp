@@ -10,10 +10,16 @@
 #include "Core\MouseCodes.h"
 #include "Core\KeyCodes.h"
 
+#include "Game\Entity\Component\CameraComponent.h"
+#include "Game\Entity\Component\TransformComponent.h"
+#include "Game\Entity\Component\ScriptComponent.h"
+
+#include "../assets/scripts/FPSCameraScript.h"
+#include "../assets/scripts/PlayerScript.h"
+
 #pragma region Constructors / Destructors
 
 GameLayer::GameLayer()
-	: m_Camera({0.0f, 60.0f, 0.0}, 45.0f, 16.0f / 9.0f)
 {
 }
 
@@ -35,10 +41,16 @@ void GameLayer::OnAttach()
 	// Initialize blocks
 	Block::CreateBlockTemplates();
 
+	m_World = CreateRef<World>();
 	// Chunk update thread
 	m_ChunkThread = std::thread([&]()
 	{
-		LoadChunks();
+		while (m_Running)
+		{
+			m_World->UpdateChunks();
+			std::this_thread::sleep_for(std::chrono::microseconds(100));
+		}
+
 	});
 }
 
@@ -48,26 +60,12 @@ void GameLayer::OnDetach()
 
 void GameLayer::OnUpdate(float dt)
 {
-	m_Camera.OnUpdate(dt);
+	m_World->OnUpdate(dt);
 
 	// Render Chunks
-	Renderer::BeginScene(m_Camera);
-	Renderer::ClearScreen({ 0.4f, 0.7f, 1.0f, 1.0f });
 
 	m_SpriteSheet->Bind(0);
-
-	for (auto it = m_ChunkMap.begin(); it != m_ChunkMap.end(); it++)
-	{
-		Ref<Chunk> chunk(it->second);
-
-		if (!chunk->GetVAO())
-			chunk->InitializeVAO();
-
-		Renderer::Submit(chunk->GetVAO(), glm::translate(glm::mat4(1.0f), glm::vec3(chunk->GetGridPosition().x * 16.0f, 0.0f, chunk->GetGridPosition().z * 16.0f)));
-	}
-
-	Renderer::EndScene();
-	Renderer::Present();
+	m_World->RenderChunks();
 
 	// Render UI
 	// TODO: move into separate layer
@@ -109,39 +107,34 @@ void GameLayer::OnEvent(Event& e)
 
 bool GameLayer::OnWindowResized(WindowResizedEvent& e)
 {
-	m_Camera.SetProjection(45.0f, (float)e.GetWidth() / (float)e.GetHeight());
+	Camera& camera = m_World->GetCameraEntity()->GetComponent<CameraComponent>()->GetCamera();
+	camera.SetProjection(45.0f, (float)e.GetWidth() / (float)e.GetHeight(), 0.01f, 1000.0f);
 	return false;
 }
 
 bool GameLayer::OnMouseButtonClicked(MouseButtonPressedEvent& e)
 {
-	auto intersected = Math::CastRayAndGetIntersectingBlocks(m_Camera.GetPosition(), m_Camera.GetCameraFront(), m_BreakDistance);
+	glm::vec3 playerPos = m_World->GetPlayerEntity()->GetComponent<TransformComponent>()->GetPosition();
+	glm::vec3 direction = m_World->GetCameraEntity()->GetComponent<TransformComponent>()->GetFront();
+	auto intersected = Math::CastRayAndGetIntersectingBlocks(playerPos, direction, m_BreakDistance);
 
 	glm::vec3 prevPosition = intersected.front();
 
 	for (const auto& currentPosition : intersected)
 	{
-		glm::ivec3 localPos = Math::GetBlockPositionInChunk(currentPosition);
-		glm::ivec2 chunkPos = Math::GetChunkPositionFromWorldPosition(currentPosition);
-
-		Ref<Chunk> chunk = m_ChunkMap[chunkPos];
-		BlockID block = (chunk->GetBlock(localPos.x, localPos.y, localPos.z));
+		BlockID block = m_World->GetBlock(currentPosition);
 
 		if (block != BlockID::Air && block != BlockID::Water)
 		{
 			if (e.GetButton() == Mouse::ButtonLeft)
 			{
-				chunk->SetBlock(localPos.x, localPos.y, localPos.z, BlockID::Air);
-				chunk->Recreate();
+				m_World->SetBlock(currentPosition, BlockID::Air);
+				m_World->GetChunk(currentPosition)->Recreate();
 			}
 			else if (e.GetButton() == Mouse::ButtonRight)
 			{
-				glm::ivec3 newBlockLocalPos = Math::GetBlockPositionInChunk(prevPosition);
-				glm::ivec2 newBlockChunkPos = Math::GetChunkPositionFromWorldPosition(prevPosition);
-				chunk = m_ChunkMap[newBlockChunkPos];
-
-				chunk->SetBlock(newBlockLocalPos.x, newBlockLocalPos.y, newBlockLocalPos.z, m_SelectedBlock);
-				chunk->Recreate();
+				m_World->SetBlock(prevPosition, m_SelectedBlock);
+				m_World->GetChunk(prevPosition)->Recreate();
 			}
 			break;
 		}
@@ -174,44 +167,6 @@ bool GameLayer::OnKeyPressed(KeyPressedEvent& e)
 #pragma endregion
 
 #pragma region Private Methods
-
-void GameLayer::LoadChunks()
-{
-	while (m_Running)
-	{
-		int currentChunkX = m_Camera.GetPosition().x / Chunk::WIDTH;
-		int currentChunkZ = m_Camera.GetPosition().z / Chunk::DEPTH;
-
-		for (auto it = m_ChunkMap.begin(); it != m_ChunkMap.end();)
-		{
-			if (it->first.x > currentChunkX + m_ChunkRenderDistance || it->first.x < currentChunkX - m_ChunkRenderDistance ||
-				it->first.y > currentChunkZ + m_ChunkRenderDistance || it->first.y < currentChunkZ - m_ChunkRenderDistance)
-			{
-				std::lock_guard<std::mutex> lock(m_Mutex);
-				it = m_ChunkMap.erase(it);
-				continue;
-			}
-			else
-				it++;
-		}
-
-		for (int i = 0; i < m_ChunkRenderDistance; i++)
-		{
-			for (int x = -i; x <= i; x++)
-			{
-				for (int z = -i; z <= i; z++)
-				{
-					if (m_ChunkMap.find({ currentChunkX + x, currentChunkZ + z }) == m_ChunkMap.end())
-					{
-						std::lock_guard<std::mutex> lock(m_Mutex);
-						m_ChunkMap[{ currentChunkX + x, currentChunkZ + z }] = CreateRef<Chunk>(glm::vec3(currentChunkX + x, 0, currentChunkZ + z));
-					}
-				}
-			}
-		}
-	}
-	std::this_thread::sleep_for(std::chrono::microseconds(100));
-}
 
 void GameLayer::InitializeTextures()
 {

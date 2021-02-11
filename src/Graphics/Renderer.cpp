@@ -14,10 +14,10 @@ void Renderer::Init()
 	s_RenderCommandQueue.reserve(1000);
 }
 
-void Renderer::BeginScene(const FPSCamera& camera)
+void Renderer::BeginScene(const Camera& camera, const glm::mat4& transform)
 {
 	s_SceneData->ProjectionMatrix = camera.GetProjectionMatrix();
-	s_SceneData->ViewMatrix = camera.GetViewMatrix();
+	s_SceneData->ViewMatrix = glm::inverse(transform);
 	s_SceneData->ViewProjectionMatrix = s_SceneData->ProjectionMatrix * s_SceneData->ViewMatrix;
 
 	s_RenderCommandQueue.clear();

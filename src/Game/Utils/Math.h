@@ -12,6 +12,14 @@ namespace Math
 		}
 	};
 
+	struct IVec2Hash
+	{
+		std::size_t operator()(const glm::ivec2& vec) const
+		{
+			return std::hash<int>()(vec.x) ^ std::hash<int>()(vec.y);
+		}
+	};
+
 	struct Vec3Hash
 	{
 		std::size_t operator()(const glm::vec3& vec) const

@@ -3,7 +3,7 @@
 #include <glm\glm.hpp>
 
 #include "Core\Base.h"
-#include "Graphics\FPSCamera.h"
+#include "Graphics\Camera.h"
 
 #include "Graphics\VertexArray.h"
 #include "Graphics\Shader.h"
@@ -28,7 +28,7 @@ class Renderer
 public:
 	static void Init();
 
-	static void BeginScene(const FPSCamera& camera);
+	static void BeginScene(const Camera& camera, const glm::mat4& transform);
 	static void EndScene();
 	static void Present();
 

@@ -9,9 +9,8 @@
 
 #include "Graphics\Shader.h"
 #include "Graphics\Texture2D.h"
-#include "Graphics\FPSCamera.h"
-#include "Game\Terrain\Chunk.h"
-#include "Utils\Math.h"
+
+#include "Game\Terrain\World.h"
 
 class GameLayer : public Layer
 {
@@ -30,7 +29,6 @@ private:
 	bool OnMouseButtonClicked(MouseButtonPressedEvent& e);
 	bool OnKeyPressed(KeyPressedEvent& e);
 
-	void LoadChunks();
 	void InitializeTextures();
 private:
 	Ref<Texture2D> m_SpriteSheet;
@@ -38,14 +36,10 @@ private:
 	Ref<Texture2D> m_ItemBoxTexture;
 
 	BlockID m_SelectedBlock = BlockID::Stone;
-	std::unordered_map<glm::vec2, Ref<Chunk>, Math::Vec2Hash> m_ChunkMap;
-	FPSCamera m_Camera;
-	glm::ivec2 m_LastChunkPos = { 0, 0 };
 
-	int m_ChunkRenderDistance = 8;
+	Ref<World> m_World;
 	float m_BreakDistance = 8.0f;
 
-	std::mutex m_Mutex;
 	std::thread m_ChunkThread;
 
 	bool m_Running = true;
