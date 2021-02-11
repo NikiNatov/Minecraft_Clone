@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Chunk.h"
 
+#include <random>
 #include <glm\gtc\noise.hpp>
 
 #include "Game\Terrain\Noise.h"
@@ -15,7 +16,7 @@ Chunk::Chunk(const glm::vec3& gridPosition)
 		m_Blocks[x] = new BlockID *[HEIGHT];
 		for (uint8_t y = 0; y < HEIGHT; y++)
 		{
-			m_Blocks[x][y] = new BlockID[DEPTH];
+			m_Blocks[x][y] = new BlockID[DEPTH]{ BlockID::Air };
 		}
 	}
 
@@ -59,7 +60,7 @@ void Chunk::CreateMeshData()
 			{
 				if (m_Blocks[x][y][z] != BlockID::Air)
 				{
-					const Block* block = Block::s_Blocks[(uint8_t)m_Blocks[x][y][z]].get();
+					const Block* block = Block::s_Blocks[(int8_t)m_Blocks[x][y][z]].get();
 
 					if (x == 0 || (x - 1 >= 0 && m_Blocks[x - 1][y][z] == BlockID::Air))
 						AddFace(block->GetFace(BlockFaceID::Left), {x , y, z});
@@ -139,7 +140,7 @@ void Chunk::GenerateBlocks()
 		}
 	}
 
-	srand(time(0));
+	std::mt19937 rng;
 	
 	for (uint8_t x = 0; x < WIDTH; x++)
 	{
@@ -149,7 +150,7 @@ void Chunk::GenerateBlocks()
 			{	
 				if (y > heights[x][z] && y > WATER_LEVEL && m_Blocks[x][y][z] != BlockID::Wood && m_Blocks[x][y][z] != BlockID::Leaf)
 					m_Blocks[x][y][z] = BlockID::Air;
-				else if(y > heights[x][z] && y <= WATER_LEVEL)
+				else if (y > heights[x][z] && y <= WATER_LEVEL)
 					m_Blocks[x][y][z] = BlockID::Water;
 				else if (y == heights[x][z] && y < WATER_LEVEL + 2)
 					m_Blocks[x][y][z] = BlockID::Sand;
@@ -159,18 +160,20 @@ void Chunk::GenerateBlocks()
 
 					if (x >= 3 && x <= WIDTH - 3 && z >= 3 && z <= DEPTH - 3)
 					{
-						int randNum = rand() % 100 + 1;
+						std::uniform_int_distribution<int> treeDist(1, 100);
+						int randNum = treeDist(rng);
 
 						if (randNum > 90)
 						{
-							int treeHeight = rand() % 6 + 4;
+							std::uniform_int_distribution<int> treeHightDist(4, 6);
+							int treeHeight = treeHightDist(rng);
 
 							// Tree trunk
 							for (int i = 1; i <= treeHeight; i++)
 								m_Blocks[x][y + i][z] = BlockID::Wood;
 
 							// Tree crown
-							for(int i = x - 2 ; i <= x + 2; i++)
+							for (int i = x - 2; i <= x + 2; i++)
 								for (int j = z - 2; j <= z + 2; j++)
 								{
 									m_Blocks[i][y + treeHeight + 1][j] = BlockID::Leaf;
@@ -181,7 +184,7 @@ void Chunk::GenerateBlocks()
 								for (int j = z - 1; j <= z + 1; j++)
 									m_Blocks[i][y + treeHeight + 3][j] = BlockID::Leaf;
 
-							for(int i = x - 1; i <= x + 1; i++)
+							for (int i = x - 1; i <= x + 1; i++)
 								m_Blocks[i][y + treeHeight + 4][z] = BlockID::Leaf;
 
 							for (int i = z - 1; i <= z + 1; i++)

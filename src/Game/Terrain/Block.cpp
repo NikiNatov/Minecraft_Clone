@@ -211,12 +211,12 @@ void Block::SetBlockTextures(BlockID block)
 
 	for (int i = 0; i < 4; i++)
 	{
-		m_Faces[(uint8_t)BlockFaceID::Up].Vertices[i].TexCoord		= upFace->GetTextureCoords()[i];
-		m_Faces[(uint8_t)BlockFaceID::Down].Vertices[i].TexCoord	= downFace->GetTextureCoords()[i];
-		m_Faces[(uint8_t)BlockFaceID::Left].Vertices[i].TexCoord	= leftFace->GetTextureCoords()[i];
-		m_Faces[(uint8_t)BlockFaceID::Right].Vertices[i].TexCoord	= rightFace->GetTextureCoords()[i];
-		m_Faces[(uint8_t)BlockFaceID::Front].Vertices[i].TexCoord	= frontFace->GetTextureCoords()[i];
-		m_Faces[(uint8_t)BlockFaceID::Back].Vertices[i].TexCoord	= backFace->GetTextureCoords()[i];
+		m_Faces[(int8_t)BlockFaceID::Up].Vertices[i].TexCoord		= upFace->GetTextureCoords()[i];
+		m_Faces[(int8_t)BlockFaceID::Down].Vertices[i].TexCoord		= downFace->GetTextureCoords()[i];
+		m_Faces[(int8_t)BlockFaceID::Left].Vertices[i].TexCoord		= leftFace->GetTextureCoords()[i];
+		m_Faces[(int8_t)BlockFaceID::Right].Vertices[i].TexCoord	= rightFace->GetTextureCoords()[i];
+		m_Faces[(int8_t)BlockFaceID::Front].Vertices[i].TexCoord	= frontFace->GetTextureCoords()[i];
+		m_Faces[(int8_t)BlockFaceID::Back].Vertices[i].TexCoord		= backFace->GetTextureCoords()[i];
 	}
 }
 
@@ -224,14 +224,14 @@ void Block::CreateBlockTemplates()
 {
 	s_Blocks.resize(10);
 
-	s_Blocks[(uint8_t)BlockID::Grass]		= CreateScoped<Block>(BlockID::Grass);
-	s_Blocks[(uint8_t)BlockID::Dirt]		= CreateScoped<Block>(BlockID::Dirt);
-	s_Blocks[(uint8_t)BlockID::Stone]		= CreateScoped<Block>(BlockID::Stone);
-	s_Blocks[(uint8_t)BlockID::Bedrock]		= CreateScoped<Block>(BlockID::Bedrock);
-	s_Blocks[(uint8_t)BlockID::Water]		= CreateScoped<Block>(BlockID::Water);
-	s_Blocks[(uint8_t)BlockID::Sand]		= CreateScoped<Block>(BlockID::Sand);
-	s_Blocks[(uint8_t)BlockID::Wood]		= CreateScoped<Block>(BlockID::Wood);
-	s_Blocks[(uint8_t)BlockID::Leaf]		= CreateScoped<Block>(BlockID::Leaf);
-	s_Blocks[(uint8_t)BlockID::Plank]		= CreateScoped<Block>(BlockID::Plank);
-	s_Blocks[(uint8_t)BlockID::Glass]		= CreateScoped<Block>(BlockID::Glass);
+	s_Blocks[(int8_t)BlockID::Grass]		= CreateScoped<Block>(BlockID::Grass);
+	s_Blocks[(int8_t)BlockID::Dirt]			= CreateScoped<Block>(BlockID::Dirt);
+	s_Blocks[(int8_t)BlockID::Stone]		= CreateScoped<Block>(BlockID::Stone);
+	s_Blocks[(int8_t)BlockID::Bedrock]		= CreateScoped<Block>(BlockID::Bedrock);
+	s_Blocks[(int8_t)BlockID::Water]		= CreateScoped<Block>(BlockID::Water);
+	s_Blocks[(int8_t)BlockID::Sand]			= CreateScoped<Block>(BlockID::Sand);
+	s_Blocks[(int8_t)BlockID::Wood]			= CreateScoped<Block>(BlockID::Wood);
+	s_Blocks[(int8_t)BlockID::Leaf]			= CreateScoped<Block>(BlockID::Leaf);
+	s_Blocks[(int8_t)BlockID::Plank]		= CreateScoped<Block>(BlockID::Plank);
+	s_Blocks[(int8_t)BlockID::Glass]		= CreateScoped<Block>(BlockID::Glass);
 }

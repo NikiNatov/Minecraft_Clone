@@ -52,6 +52,8 @@ void GameLayer::OnAttach()
 		}
 
 	});
+
+	std::this_thread::sleep_for(std::chrono::milliseconds(500));
 }
 
 void GameLayer::OnDetach()
@@ -116,7 +118,7 @@ bool GameLayer::OnMouseButtonClicked(MouseButtonPressedEvent& e)
 {
 	glm::vec3 playerPos = m_World->GetPlayerEntity()->GetComponent<TransformComponent>()->GetPosition();
 	glm::vec3 direction = m_World->GetCameraEntity()->GetComponent<TransformComponent>()->GetFront();
-	auto intersected = Math::CastRayAndGetIntersectingBlocks(playerPos, direction, m_BreakDistance);
+	auto intersected = Math::CastRayAndGetIntersectingBlocks(playerPos, direction, m_MaxBlockBreakDistance);
 
 	glm::vec3 prevPosition = intersected.front();
 
@@ -133,8 +135,11 @@ bool GameLayer::OnMouseButtonClicked(MouseButtonPressedEvent& e)
 			}
 			else if (e.GetButton() == Mouse::ButtonRight)
 			{
-				m_World->SetBlock(prevPosition, m_SelectedBlock);
-				m_World->GetChunk(prevPosition)->Recreate();
+				if (glm::distance(prevPosition, playerPos) >= m_MinBlockPlaceDistance)
+				{
+					m_World->SetBlock(prevPosition, m_SelectedBlock);
+					m_World->GetChunk(prevPosition)->Recreate();
+				}
 			}
 			break;
 		}

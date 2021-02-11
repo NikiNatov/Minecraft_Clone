@@ -29,7 +29,7 @@ struct BlockFace
 	uint32_t Indices[6];
 };
 
-enum class BlockID : uint8_t
+enum class BlockID : int8_t
 {
 	Air		= -1,
 	Grass	=  0,

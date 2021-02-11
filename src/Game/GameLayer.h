@@ -38,7 +38,8 @@ private:
 	BlockID m_SelectedBlock = BlockID::Stone;
 
 	Ref<World> m_World;
-	float m_BreakDistance = 8.0f;
+	float m_MaxBlockBreakDistance = 8.0f;
+	float m_MinBlockPlaceDistance = 1.8f;
 
 	std::thread m_ChunkThread;
 

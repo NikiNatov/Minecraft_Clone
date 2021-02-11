@@ -20,7 +20,7 @@ World::World()
 	glm::vec3 playerRot = m_Player->GetComponent<TransformComponent>()->GetRotation();
 
 	m_Camera = CreateRef<Entity>(playerPos, playerRot, glm::vec3(1.0f), this);
-	m_Camera->AddComponent<CameraComponent>(45.0f, 16.0f / 9.0f, 0.01f, 1000.0f);
+	m_Camera->AddComponent<CameraComponent>(60.0f, 16.0f / 9.0f, 0.01f, 1000.0f);
 	m_Camera->AddComponent<ScriptComponent>()->Bind<FPSCameraScript>();
 	m_Camera->GetComponent<ScriptComponent>()->GetInstance()->OnCreate();
 }
@@ -122,6 +122,6 @@ BlockID World::GetBlock(const glm::vec3& position) const
 Ref<Chunk> World::GetChunk(const glm::vec3& position) const
 {
 	glm::ivec2 chunkPos = Math::GetChunkPositionFromWorldPosition(position);
-	ASSERT(m_Chunks.find(chunkPos) != m_Chunks.end(), "Chunk does not exist!");
+	//ASSERT(m_Chunks.find(chunkPos) != m_Chunks.end(), "Chunk does not exist!");
 	return m_Chunks.at(chunkPos);
 }
