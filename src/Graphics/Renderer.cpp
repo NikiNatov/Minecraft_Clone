@@ -54,14 +54,14 @@ void Renderer::Present()
 	{
 		s_SceneData->ChunkShader->SetMat4("u_Transform", 1, command.Transform);
 
-		auto& fluidMesh = command.Chunk->GetFluidMesh();
+		auto& transparentMesh = command.Chunk->GetTransparentMesh();
 
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-		fluidMesh->GetVAO()->Bind();
-		glDrawElements(GL_TRIANGLES, fluidMesh->GetVAO()->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
-		fluidMesh->GetVAO()->Bind();
+		transparentMesh->GetVAO()->Bind();
+		glDrawElements(GL_TRIANGLES, transparentMesh->GetVAO()->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+		transparentMesh->GetVAO()->Bind();
 	}
 }
 

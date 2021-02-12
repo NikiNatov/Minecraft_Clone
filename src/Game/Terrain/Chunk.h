@@ -19,7 +19,7 @@ public:
 	void InitializeMeshesVAOs();
 
 	inline const Ref<ChunkMesh> GetSolidMesh() const { return m_SolidMesh; }
-	inline const Ref<ChunkMesh> GetFluidMesh() const { return m_FluidMesh; }
+	inline const Ref<ChunkMesh> GetTransparentMesh() const { return m_TransparentMesh; }
 
 	inline const glm::vec3& GetGridPosition() const { return m_GridPosition; }
 	inline BlockID GetBlock(int x, int y, int z) const { return m_Blocks[x][y][z]; }
@@ -40,5 +40,5 @@ private:
 	glm::vec3 m_GridPosition;
 
 	Ref<ChunkMesh> m_SolidMesh;
-	Ref<ChunkMesh> m_FluidMesh;
+	Ref<ChunkMesh> m_TransparentMesh;
 };

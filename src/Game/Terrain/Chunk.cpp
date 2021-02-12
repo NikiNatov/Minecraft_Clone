@@ -49,7 +49,7 @@ void Chunk::Recreate()
 void Chunk::InitializeMeshesVAOs()
 {
 	m_SolidMesh->InitializeVAO();
-	m_FluidMesh->InitializeVAO();
+	m_TransparentMesh->InitializeVAO();
 }
 
 void Chunk::CreateMeshData()
@@ -57,11 +57,11 @@ void Chunk::CreateMeshData()
 	if (!m_SolidMesh)
 		m_SolidMesh = CreateRef<ChunkMesh>();
 
-	if (!m_FluidMesh)
-		m_FluidMesh = CreateRef<ChunkMesh>();
+	if (!m_TransparentMesh)
+		m_TransparentMesh = CreateRef<ChunkMesh>();
 
 	m_SolidMesh->Clear();
-	m_FluidMesh->Clear();
+	m_TransparentMesh->Clear();
 
 	for (uint8_t x = 0; x < WIDTH; x++)
 	{
@@ -74,37 +74,76 @@ void Chunk::CreateMeshData()
 				{
 					const Block* block = Block::s_Blocks[(int8_t)m_Blocks[x][y][z]].get();
 
-					if (x == 0 || (x - 1 >= 0 && (m_Blocks[x - 1][y][z] == BlockID::Air || m_Blocks[x - 1][y][z] == BlockID::Water)))
+					if (x == 0 || (x - 1 >= 0 && (m_Blocks[x - 1][y][z] == BlockID::Air || m_Blocks[x - 1][y][z] == BlockID::Water || m_Blocks[x - 1][y][z] == BlockID::Glass)))
 					{
 						if (blockType != BlockID::Water)
-							m_SolidMesh->AddFace(block->GetFace(BlockFaceID::Left), { x , y, z });
+						{
+							if(blockType == BlockID::Glass)
+								m_TransparentMesh->AddFace(block->GetFace(BlockFaceID::Left), { x , y, z });
+							else
+								m_SolidMesh->AddFace(block->GetFace(BlockFaceID::Left), { x , y, z });
+						}
 					}
-					if (x == WIDTH - 1 || (x + 1 < WIDTH && (m_Blocks[x + 1][y][z] == BlockID::Air || m_Blocks[x + 1][y][z] == BlockID::Water)))
+					if (x == WIDTH - 1 || (x + 1 < WIDTH && (m_Blocks[x + 1][y][z] == BlockID::Air || m_Blocks[x + 1][y][z] == BlockID::Water || m_Blocks[x + 1][y][z] == BlockID::Glass)))
 					{
 						if (blockType != BlockID::Water)
-							m_SolidMesh->AddFace(block->GetFace(BlockFaceID::Right), { x , y, z });
+						{
+							if (blockType == BlockID::Glass)
+								m_TransparentMesh->AddFace(block->GetFace(BlockFaceID::Right), { x , y, z });
+							else
+								m_SolidMesh->AddFace(block->GetFace(BlockFaceID::Right), { x , y, z });
+						}
 					}
-					if (y == 0 || (y - 1 >= 0 && (m_Blocks[x][y - 1][z] == BlockID::Air || m_Blocks[x][y - 1][z] == BlockID::Water)))
+					if (y == 0 || (y - 1 >= 0 && (m_Blocks[x][y - 1][z] == BlockID::Air || m_Blocks[x][y - 1][z] == BlockID::Water || m_Blocks[x][y - 1][z] == BlockID::Glass)))
 					{
 						if (blockType != BlockID::Water)
-							m_SolidMesh->AddFace(block->GetFace(BlockFaceID::Down), { x , y, z });
+						{
+							if (blockType == BlockID::Glass)
+								m_TransparentMesh->AddFace(block->GetFace(BlockFaceID::Down), { x , y, z });
+							else
+								m_SolidMesh->AddFace(block->GetFace(BlockFaceID::Down), { x , y, z });
+						}
 					}
-					if (y == HEIGHT - 1 || (y + 1 < HEIGHT && (m_Blocks[x][y + 1][z] == BlockID::Air || m_Blocks[x][y + 1][z] == BlockID::Water)))
+					if (y == HEIGHT - 1 || (y + 1 < HEIGHT && (m_Blocks[x][y + 1][z] == BlockID::Air || m_Blocks[x][y + 1][z] == BlockID::Water || m_Blocks[x][y + 1][z] == BlockID::Glass)))
 					{
 						if (blockType == BlockID::Water)
-							m_FluidMesh->AddFace(block->GetFace(BlockFaceID::Up), { x , y - 0.2f, z });
+							m_TransparentMesh->AddFace(block->GetFace(BlockFaceID::Up), { x , y - 0.2f, z });
 						else
-							m_SolidMesh->AddFace(block->GetFace(BlockFaceID::Up), { x , y, z });
+						{
+							if (blockType != BlockID::Water)
+							{
+								if (blockType == BlockID::Glass)
+									m_TransparentMesh->AddFace(block->GetFace(BlockFaceID::Up), { x , y, z });
+								else
+									m_SolidMesh->AddFace(block->GetFace(BlockFaceID::Up), { x , y, z });
+							}
+						}
 					}
-					if (z == 0 || (z - 1 >= 0 && (m_Blocks[x][y][z - 1] == BlockID::Air || m_Blocks[x][y][z - 1] == BlockID::Water)))
+					if (z == 0 || (z - 1 >= 0 && (m_Blocks[x][y][z - 1] == BlockID::Air || m_Blocks[x][y][z - 1] == BlockID::Water || m_Blocks[x][y][z - 1] == BlockID::Glass)))
 					{
 						if (blockType != BlockID::Water)
-							m_SolidMesh->AddFace(block->GetFace(BlockFaceID::Back), { x , y, z });
+						{
+							if (blockType != BlockID::Water)
+							{
+								if (blockType == BlockID::Glass)
+									m_TransparentMesh->AddFace(block->GetFace(BlockFaceID::Back), { x , y, z });
+								else
+									m_SolidMesh->AddFace(block->GetFace(BlockFaceID::Back), { x , y, z });
+							}
+						}
 					}
-					if (z == DEPTH - 1 || (z + 1 < DEPTH && (m_Blocks[x][y][z + 1] == BlockID::Air || m_Blocks[x][y][z + 1] == BlockID::Water)))
+					if (z == DEPTH - 1 || (z + 1 < DEPTH && (m_Blocks[x][y][z + 1] == BlockID::Air || m_Blocks[x][y][z + 1] == BlockID::Water || m_Blocks[x][y][z + 1] == BlockID::Glass)))
 					{
 						if (blockType != BlockID::Water)
-							m_SolidMesh->AddFace(block->GetFace(BlockFaceID::Front), { x , y, z });
+						{
+							if (blockType != BlockID::Water)
+							{
+								if (blockType == BlockID::Glass)
+									m_TransparentMesh->AddFace(block->GetFace(BlockFaceID::Front), { x , y, z });
+								else
+									m_SolidMesh->AddFace(block->GetFace(BlockFaceID::Front), { x , y, z });
+							}
+						}
 					}
 					
 				}

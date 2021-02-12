@@ -50,7 +50,7 @@ void World::RenderChunks()
 	{
 		Ref<Chunk> chunk(it->second);
 
-		if (!chunk->GetSolidMesh()->GetVAO() || !chunk->GetFluidMesh()->GetVAO())
+		if (!chunk->GetSolidMesh()->GetVAO() || !chunk->GetTransparentMesh()->GetVAO())
 			chunk->InitializeMeshesVAOs();
 
 		Renderer::Submit(chunk, glm::translate(glm::mat4(1.0f), glm::vec3(chunk->GetGridPosition().x * 16.0f, 0.0f, chunk->GetGridPosition().z * 16.0f)));
