@@ -7,6 +7,7 @@
 #include "Graphics\Texture2D.h"
 
 #include "Game\Terrain\Block.h"
+#include "Game\Terrain\ChunkMesh.h"
 
 class Chunk
 {
@@ -15,16 +16,17 @@ public:
 	~Chunk();
 
 	void Recreate();
-	void InitializeVAO();
+	void InitializeMeshesVAOs();
 
-	inline const Ref<VertexArray>& GetVAO() const { return m_VAO; }
+	inline const Ref<ChunkMesh> GetSolidMesh() const { return m_SolidMesh; }
+	inline const Ref<ChunkMesh> GetFluidMesh() const { return m_FluidMesh; }
+
 	inline const glm::vec3& GetGridPosition() const { return m_GridPosition; }
 	inline BlockID GetBlock(int x, int y, int z) const { return m_Blocks[x][y][z]; }
 	inline void SetBlock(int x, int y, int z, BlockID id) const { m_Blocks[x][y][z] = id; }
 private:
 	void CreateMeshData();
 	void GenerateBlocks();
-	void AddFace(const BlockFace& face, const glm::vec3& blockPosition);
 public:
 	static const uint8_t WIDTH = 16;
 	static const uint8_t HEIGHT = 255;
@@ -37,8 +39,6 @@ private:
 	BlockID*** m_Blocks;
 	glm::vec3 m_GridPosition;
 
-	Ref<VertexArray> m_VAO;
-	std::vector<Vertex> m_Vertices;
-	std::vector<uint32_t> m_Indices;
-	int m_IndicesCount = 0;
+	Ref<ChunkMesh> m_SolidMesh;
+	Ref<ChunkMesh> m_FluidMesh;
 };

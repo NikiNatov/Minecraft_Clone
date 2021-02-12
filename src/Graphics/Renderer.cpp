@@ -3,6 +3,7 @@
 
 #include <glad\glad.h>
 
+
 ScopedPtr<SceneData> Renderer::s_SceneData = CreateScoped<SceneData>();
 std::vector<RenderCommand> Renderer::s_RenderCommandQueue;
 
@@ -33,21 +34,41 @@ void Renderer::EndScene()
 
 void Renderer::Present()
 {
+	s_SceneData->ChunkShader->SetMat4("u_ViewProjection", 1, s_SceneData->ViewProjectionMatrix);
+	s_SceneData->ChunkShader->SetInt("u_Texture", 0);
+
 	for (auto& command : s_RenderCommandQueue)
 	{
-		s_SceneData->ChunkShader->SetMat4("u_ViewProjection", 1, s_SceneData->ViewProjectionMatrix);
 		s_SceneData->ChunkShader->SetMat4("u_Transform", 1, command.Transform);
-		s_SceneData->ChunkShader->SetInt("u_Texture", 0);
-		command.VAO->Bind();
-		glDrawElements(GL_TRIANGLES, command.VAO->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
-		command.VAO->Unbind();
+		
+		auto& solidMesh = command.Chunk->GetSolidMesh();
+
+		glDisable(GL_BLEND);
+
+		solidMesh->GetVAO()->Bind();
+		glDrawElements(GL_TRIANGLES, solidMesh->GetVAO()->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+		solidMesh->GetVAO()->Bind();
+	}
+
+	for (auto& command : s_RenderCommandQueue)
+	{
+		s_SceneData->ChunkShader->SetMat4("u_Transform", 1, command.Transform);
+
+		auto& fluidMesh = command.Chunk->GetFluidMesh();
+
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+		fluidMesh->GetVAO()->Bind();
+		glDrawElements(GL_TRIANGLES, fluidMesh->GetVAO()->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+		fluidMesh->GetVAO()->Bind();
 	}
 }
 
-void Renderer::Submit(const Ref<VertexArray>& vao, const glm::mat4& transform)
+void Renderer::Submit(const Ref<Chunk>& chunk, const glm::mat4& transform)
 {
 	RenderCommand command;
-	command.VAO = vao;
+	command.Chunk = chunk;
 	command.Transform = transform;
 	s_RenderCommandQueue.emplace_back(command);
 }

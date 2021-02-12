@@ -9,6 +9,8 @@
 #include "Graphics\Shader.h"
 #include "Graphics\Texture2D.h"
 
+#include "Game\Terrain\Chunk.h"
+
 struct SceneData
 {
 	glm::mat4 ProjectionMatrix;
@@ -19,7 +21,7 @@ struct SceneData
 
 struct RenderCommand
 {
-	Ref<VertexArray> VAO;
+	Ref<Chunk> Chunk;
 	glm::mat4 Transform;
 };
 
@@ -32,7 +34,7 @@ public:
 	static void EndScene();
 	static void Present();
 
-	static void Submit(const Ref<VertexArray>& vao, const glm::mat4& transform);
+	static void Submit(const Ref<Chunk>& chunk, const glm::mat4& transform);
 	static void SetViewportSize(int x, int y, int width, int height);
 	static void ClearScreen(const glm::vec4& color);
 private:

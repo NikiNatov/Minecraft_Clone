@@ -130,7 +130,18 @@ bool GameLayer::OnMouseButtonClicked(MouseButtonPressedEvent& e)
 		{
 			if (e.GetButton() == Mouse::ButtonLeft)
 			{
-				m_World->SetBlock(currentPosition, BlockID::Air);
+				BlockID replacementBlock = BlockID::Air;
+
+				if (currentPosition.y == Chunk::WATER_LEVEL &&
+					(m_World->GetBlock({ currentPosition.x - 1, currentPosition.y, currentPosition.z }) == BlockID::Water ||
+					 m_World->GetBlock({ currentPosition.x + 1, currentPosition.y, currentPosition.z }) == BlockID::Water || 
+					 m_World->GetBlock({ currentPosition.x, currentPosition.y, currentPosition.z - 1}) == BlockID::Water || 
+					 m_World->GetBlock({ currentPosition.x, currentPosition.y, currentPosition.z + 1}) == BlockID::Water))
+				{
+					replacementBlock = BlockID::Water;
+				}
+
+				m_World->SetBlock(currentPosition, replacementBlock);
 				m_World->GetChunk(currentPosition)->Recreate();
 			}
 			else if (e.GetButton() == Mouse::ButtonRight)

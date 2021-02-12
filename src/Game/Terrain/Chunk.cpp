@@ -43,14 +43,25 @@ Chunk::~Chunk()
 void Chunk::Recreate()
 {
 	CreateMeshData();
-	InitializeVAO();
+	InitializeMeshesVAOs();
+}
+
+void Chunk::InitializeMeshesVAOs()
+{
+	m_SolidMesh->InitializeVAO();
+	m_FluidMesh->InitializeVAO();
 }
 
 void Chunk::CreateMeshData()
 {
-	m_Indices.clear();
-	m_Vertices.clear();
-	m_IndicesCount = 0;
+	if (!m_SolidMesh)
+		m_SolidMesh = CreateRef<ChunkMesh>();
+
+	if (!m_FluidMesh)
+		m_FluidMesh = CreateRef<ChunkMesh>();
+
+	m_SolidMesh->Clear();
+	m_FluidMesh->Clear();
 
 	for (uint8_t x = 0; x < WIDTH; x++)
 	{
@@ -58,64 +69,48 @@ void Chunk::CreateMeshData()
 		{
 			for (uint8_t z = 0; z < DEPTH; z++)
 			{
-				if (m_Blocks[x][y][z] != BlockID::Air)
+				BlockID blockType = m_Blocks[x][y][z];
+				if (blockType != BlockID::Air)
 				{
 					const Block* block = Block::s_Blocks[(int8_t)m_Blocks[x][y][z]].get();
 
-					if (x == 0 || (x - 1 >= 0 && m_Blocks[x - 1][y][z] == BlockID::Air))
-						AddFace(block->GetFace(BlockFaceID::Left), {x , y, z});
-					if (x == WIDTH - 1 || (x + 1 < WIDTH && m_Blocks[x + 1][y][z] == BlockID::Air))
-						AddFace(block->GetFace(BlockFaceID::Right), { x , y, z });
-					if (y == 0 || (y - 1 >= 0 && m_Blocks[x][y - 1][z] == BlockID::Air))
-						AddFace(block->GetFace(BlockFaceID::Down), { x , y, z });
-					if (y == HEIGHT - 1 || (y + 1 < HEIGHT && m_Blocks[x][y + 1][z] == BlockID::Air))
-						AddFace(block->GetFace(BlockFaceID::Up), { x , y, z });
-					if (z == 0 || (z - 1 >= 0 && m_Blocks[x][y][z - 1] == BlockID::Air))
-						AddFace(block->GetFace(BlockFaceID::Back), { x , y, z });
-					if (z == DEPTH - 1 || (z + 1 < DEPTH && m_Blocks[x][y][z + 1] == BlockID::Air))
-						AddFace(block->GetFace(BlockFaceID::Front), { x , y, z });
+					if (x == 0 || (x - 1 >= 0 && (m_Blocks[x - 1][y][z] == BlockID::Air || m_Blocks[x - 1][y][z] == BlockID::Water)))
+					{
+						if (blockType != BlockID::Water)
+							m_SolidMesh->AddFace(block->GetFace(BlockFaceID::Left), { x , y, z });
+					}
+					if (x == WIDTH - 1 || (x + 1 < WIDTH && (m_Blocks[x + 1][y][z] == BlockID::Air || m_Blocks[x + 1][y][z] == BlockID::Water)))
+					{
+						if (blockType != BlockID::Water)
+							m_SolidMesh->AddFace(block->GetFace(BlockFaceID::Right), { x , y, z });
+					}
+					if (y == 0 || (y - 1 >= 0 && (m_Blocks[x][y - 1][z] == BlockID::Air || m_Blocks[x][y - 1][z] == BlockID::Water)))
+					{
+						if (blockType != BlockID::Water)
+							m_SolidMesh->AddFace(block->GetFace(BlockFaceID::Down), { x , y, z });
+					}
+					if (y == HEIGHT - 1 || (y + 1 < HEIGHT && (m_Blocks[x][y + 1][z] == BlockID::Air || m_Blocks[x][y + 1][z] == BlockID::Water)))
+					{
+						if (blockType == BlockID::Water)
+							m_FluidMesh->AddFace(block->GetFace(BlockFaceID::Up), { x , y - 0.2f, z });
+						else
+							m_SolidMesh->AddFace(block->GetFace(BlockFaceID::Up), { x , y, z });
+					}
+					if (z == 0 || (z - 1 >= 0 && (m_Blocks[x][y][z - 1] == BlockID::Air || m_Blocks[x][y][z - 1] == BlockID::Water)))
+					{
+						if (blockType != BlockID::Water)
+							m_SolidMesh->AddFace(block->GetFace(BlockFaceID::Back), { x , y, z });
+					}
+					if (z == DEPTH - 1 || (z + 1 < DEPTH && (m_Blocks[x][y][z + 1] == BlockID::Air || m_Blocks[x][y][z + 1] == BlockID::Water)))
+					{
+						if (blockType != BlockID::Water)
+							m_SolidMesh->AddFace(block->GetFace(BlockFaceID::Front), { x , y, z });
+					}
 					
 				}
 			}
 		}
 	}
-}
-
-void Chunk::AddFace(const BlockFace& face, const glm::vec3& blockPosition)
-{
-	for (int i = 0; i < 4; i++)
-	{
-		Vertex v = face.Vertices[i];
-		v.Position += blockPosition;
-		m_Vertices.push_back(v);
-	}
-
-	m_Indices.push_back(m_IndicesCount);
-	m_Indices.push_back(m_IndicesCount + 1);
-	m_Indices.push_back(m_IndicesCount + 2);
-	m_Indices.push_back(m_IndicesCount + 2);
-	m_Indices.push_back(m_IndicesCount + 3);
-	m_Indices.push_back(m_IndicesCount);
-	m_IndicesCount += 4;
-}
-
-void Chunk::InitializeVAO()
-{
-	Ref<VertexBuffer> vb = CreateRef<VertexBuffer>(m_Vertices.data(), m_Vertices.size() * sizeof(Vertex));
-	vb->SetLayout({
-			{"a_Position", DataType::Float3, false},
-			{"a_TexCoords", DataType::Float2, false},
-			{"a_Normal", DataType::Float3, false},
-			{"a_LightLevel", DataType::Float, false}
-	});
-
-	Ref<IndexBuffer> ib = CreateRef<IndexBuffer>(m_Indices.data(), m_Indices.size());
-
-	m_VAO = CreateRef<VertexArray>();
-	m_VAO->Bind();
-	m_VAO->SetVertexBuffer(vb);
-	m_VAO->SetIndexBuffer(ib);
-	m_VAO->Unbind();
 }
 
 void Chunk::GenerateBlocks()
@@ -140,7 +135,11 @@ void Chunk::GenerateBlocks()
 		}
 	}
 
-	std::mt19937 rng;
+	std::random_device device;
+	std::mt19937 rng(device());
+	std::uniform_int_distribution<int> treeDist(1, 100);
+	std::uniform_int_distribution<int> treeHightDist(4, 6);
+
 	
 	for (uint8_t x = 0; x < WIDTH; x++)
 	{
@@ -150,8 +149,10 @@ void Chunk::GenerateBlocks()
 			{	
 				if (y > heights[x][z] && y > WATER_LEVEL && m_Blocks[x][y][z] != BlockID::Wood && m_Blocks[x][y][z] != BlockID::Leaf)
 					m_Blocks[x][y][z] = BlockID::Air;
-				else if (y > heights[x][z] && y <= WATER_LEVEL)
+				else if(y == WATER_LEVEL && y > heights[x][z])
 					m_Blocks[x][y][z] = BlockID::Water;
+				else if (y > heights[x][z] && y < WATER_LEVEL)
+					m_Blocks[x][y][z] = BlockID::Air;
 				else if (y == heights[x][z] && y < WATER_LEVEL + 2)
 					m_Blocks[x][y][z] = BlockID::Sand;
 				else if (y == heights[x][z])
@@ -160,12 +161,10 @@ void Chunk::GenerateBlocks()
 
 					if (x >= 3 && x <= WIDTH - 3 && z >= 3 && z <= DEPTH - 3)
 					{
-						std::uniform_int_distribution<int> treeDist(1, 100);
 						int randNum = treeDist(rng);
 
 						if (randNum > 90)
 						{
-							std::uniform_int_distribution<int> treeHightDist(4, 6);
 							int treeHeight = treeHightDist(rng);
 
 							// Tree trunk

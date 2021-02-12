@@ -64,7 +64,7 @@ public:
 
 	void CollisionCheck(const glm::vec3& velocity)
 	{
-		glm::vec3 bounds = { 0.5f, 1.5f, 0.5f };
+		glm::vec3 bounds = { 0.3f, 1.5f, 0.3f };
 
 		auto& position = GetComponent<TransformComponent>()->GetPosition();
 

@@ -50,10 +50,10 @@ void World::RenderChunks()
 	{
 		Ref<Chunk> chunk(it->second);
 
-		if (!chunk->GetVAO())
-			chunk->InitializeVAO();
+		if (!chunk->GetSolidMesh()->GetVAO() || !chunk->GetFluidMesh()->GetVAO())
+			chunk->InitializeMeshesVAOs();
 
-		Renderer::Submit(chunk->GetVAO(), glm::translate(glm::mat4(1.0f), glm::vec3(chunk->GetGridPosition().x * 16.0f, 0.0f, chunk->GetGridPosition().z * 16.0f)));
+		Renderer::Submit(chunk, glm::translate(glm::mat4(1.0f), glm::vec3(chunk->GetGridPosition().x * 16.0f, 0.0f, chunk->GetGridPosition().z * 16.0f)));
 	}
 
 	Renderer::EndScene();
@@ -122,6 +122,6 @@ BlockID World::GetBlock(const glm::vec3& position) const
 Ref<Chunk> World::GetChunk(const glm::vec3& position) const
 {
 	glm::ivec2 chunkPos = Math::GetChunkPositionFromWorldPosition(position);
-	//ASSERT(m_Chunks.find(chunkPos) != m_Chunks.end(), "Chunk does not exist!");
+	ASSERT(m_Chunks.find(chunkPos) != m_Chunks.end(), "Chunk does not exist!");
 	return m_Chunks.at(chunkPos);
 }
