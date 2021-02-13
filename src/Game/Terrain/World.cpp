@@ -12,7 +12,7 @@
 
 World::World()
 {
-	m_Player = CreateRef<Entity>(glm::vec3(0.0f, 60.0f, 0.0), glm::vec3(0.0f), glm::vec3(1.0f), this);
+	m_Player = CreateRef<Entity>(glm::vec3(0.0f, 65.0f, 0.0), glm::vec3(0.0f), glm::vec3(1.0f), this);
 	m_Player->AddComponent<ScriptComponent>()->Bind<PlayerScript>();
 	m_Player->GetComponent<ScriptComponent>()->GetInstance()->OnCreate();
 

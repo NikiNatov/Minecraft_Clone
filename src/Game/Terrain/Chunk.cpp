@@ -49,6 +49,7 @@ void Chunk::Recreate()
 void Chunk::InitializeMeshesVAOs()
 {
 	m_SolidMesh->InitializeVAO();
+	m_WaterMesh->InitializeVAO();
 	m_TransparentMesh->InitializeVAO();
 }
 
@@ -57,10 +58,14 @@ void Chunk::CreateMeshData()
 	if (!m_SolidMesh)
 		m_SolidMesh = CreateRef<ChunkMesh>();
 
+	if (!m_WaterMesh)
+		m_WaterMesh = CreateRef<ChunkMesh>();
+
 	if (!m_TransparentMesh)
 		m_TransparentMesh = CreateRef<ChunkMesh>();
 
 	m_SolidMesh->Clear();
+	m_WaterMesh->Clear();
 	m_TransparentMesh->Clear();
 
 	for (uint8_t x = 0; x < WIDTH; x++)
@@ -74,6 +79,10 @@ void Chunk::CreateMeshData()
 				{
 					const Block* block = Block::s_Blocks[(int8_t)m_Blocks[x][y][z]].get();
 
+					if (blockType == BlockID::Water)
+					{
+						m_WaterMesh->AddFace(block->GetFace(BlockFaceID::Up), { x , y - 0.2f, z });
+					}
 					if (x == 0 || (x - 1 >= 0 && (m_Blocks[x - 1][y][z] == BlockID::Air || m_Blocks[x - 1][y][z] == BlockID::Water || m_Blocks[x - 1][y][z] == BlockID::Glass)))
 					{
 						if (blockType != BlockID::Water)
@@ -106,18 +115,13 @@ void Chunk::CreateMeshData()
 					}
 					if (y == HEIGHT - 1 || (y + 1 < HEIGHT && (m_Blocks[x][y + 1][z] == BlockID::Air || m_Blocks[x][y + 1][z] == BlockID::Water || m_Blocks[x][y + 1][z] == BlockID::Glass)))
 					{
-						if (blockType == BlockID::Water)
-							m_TransparentMesh->AddFace(block->GetFace(BlockFaceID::Up), { x , y - 0.2f, z });
-						else
+						if (blockType != BlockID::Water)
 						{
-							if (blockType != BlockID::Water)
-							{
-								if (blockType == BlockID::Glass)
-									m_TransparentMesh->AddFace(block->GetFace(BlockFaceID::Up), { x , y, z });
-								else
-									m_SolidMesh->AddFace(block->GetFace(BlockFaceID::Up), { x , y, z });
-							}
-						}
+							if (blockType == BlockID::Glass)
+								m_TransparentMesh->AddFace(block->GetFace(BlockFaceID::Up), { x , y, z });
+							else
+								m_SolidMesh->AddFace(block->GetFace(BlockFaceID::Up), { x , y, z });
+						}	
 					}
 					if (z == 0 || (z - 1 >= 0 && (m_Blocks[x][y][z - 1] == BlockID::Air || m_Blocks[x][y][z - 1] == BlockID::Water || m_Blocks[x][y][z - 1] == BlockID::Glass)))
 					{

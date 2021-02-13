@@ -38,6 +38,10 @@ public:
 	static void SetViewportSize(int x, int y, int width, int height);
 	static void ClearScreen(const glm::vec4& color);
 private:
+	static void PresentSolidMeshes();
+	static void PresentTransparentMeshes();
+	static void PresentWaterMeshes();
+private:
 	static ScopedPtr<SceneData> s_SceneData;
 	static std::vector<RenderCommand> s_RenderCommandQueue;
 };
